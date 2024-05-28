@@ -35,13 +35,14 @@ cursor=con.cursor()
 
 
 for spot in filtered_spot_list:
-   cursor.execute("INSERT INTO spot (id, name, category, description, address, transport, lat, lng) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                  (spot["id"], spot["name"], spot["category"] , spot["description"], spot["address"], spot["transport"], spot["lat"], spot["lng"]))
+   images_json = json.dumps(spot["images"])
+   cursor.execute("INSERT INTO spot (id, name, description, address, transport, lat, lng, images) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                  (spot["id"], spot["name"], spot["description"], spot["address"], spot["transport"], spot["lat"], spot["lng"], images_json))
    con.commit()
    cursor.execute("INSERT INTO mrt (spot_id, mrt) VALUES (%s, %s)",
                   (spot["id"], spot["mrt"]))
    con.commit()
-   images_json = json.dumps(spot["images"])
-   cursor.execute("INSERT INTO image (spot_id, img) VALUES (%s, %s)",
-                  (spot["id"], images_json))
+   
+   cursor.execute("INSERT INTO category (spot_id, category) VALUES (%s, %s)",
+                  (spot["id"], spot["category"]))
    con.commit()
