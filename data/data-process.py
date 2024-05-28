@@ -37,9 +37,9 @@ for spot in filtered_spot_list:
    cursor.execute("INSERT INTO spot (id, name, description, address, transport, lat, lng, images) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                   (spot["id"], spot["name"], spot["description"], spot["address"], spot["transport"], spot["lat"], spot["lng"], images_json))
    con.commit()
-   cursor.execute("INSERT INTO mrt (spot_id, mrt) VALUES (%s, %s)",
+   cursor.execute("INSERT INTO mrt (spot_id, name) VALUES (%s, %s)",
                   (spot["id"], spot["mrt"]))
    con.commit()
-   cursor.execute("INSERT INTO category (spot_id, category) VALUES (%s, %s)",
+   cursor.execute("INSERT INTO category (spot_id, name) VALUES (%s, %s)",
                   (spot["id"], spot["category"]))
    con.commit()
