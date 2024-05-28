@@ -3,14 +3,13 @@ import re
 import os
 from dotenv import load_dotenv
 import mysql.connector
-from mysql.connector import pooling
 
 
 with open("taipei-attractions.json", "r", encoding="utf-8") as file:
     data = json.load(file)
 spot_list = data["result"]["results"]
 
-# 先篩選要的資訊
+
 filtered_spot_list=[]
 for spot in spot_list:
     #img篩選
@@ -20,7 +19,6 @@ for spot in spot_list:
     address_no_space = address.replace(" ", "")
     filtered_spot_list.append({"id":spot["_id"] ,"name":spot["name"], "category":spot["CAT"], "description":spot["description"], "address":address_no_space, 
                       "transport":spot["direction"], "mrt":spot["MRT"], "lat":spot["latitude"], "lng":spot["longitude"], "images":imgurls})
-#print(filtered_spot_list)
 
 load_dotenv()
 mypassword = os.getenv("mypassword")
@@ -42,7 +40,6 @@ for spot in filtered_spot_list:
    cursor.execute("INSERT INTO mrt (spot_id, mrt) VALUES (%s, %s)",
                   (spot["id"], spot["mrt"]))
    con.commit()
-   
    cursor.execute("INSERT INTO category (spot_id, category) VALUES (%s, %s)",
                   (spot["id"], spot["category"]))
    con.commit()
