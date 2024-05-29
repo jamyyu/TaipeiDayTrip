@@ -4,6 +4,11 @@ from dotenv import load_dotenv
 import os
 import mysql.connector
 from mysql.connector import pooling
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Union
+import json
+
 app=FastAPI()
 
 
@@ -39,6 +44,27 @@ def execute_query(query, params=None, dictionary=False):
             cnx.close()
 
 
+class Error(BaseModel):
+    error: bool
+    message: str
+class Attraction(BaseModel):
+    id: int
+    name: str
+    category: str
+    description: str
+    address: str
+    transport: str
+    mrt: str=None
+    lat: float
+    lng: float
+    images: list[str]
+class AttractionData(BaseModel):
+    data: Attraction = None
+class Data(BaseModel):
+    data: Union [list ,dict]
+
+
+
 # Static Pages (Never Modify Code in this Block)
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
@@ -59,7 +85,12 @@ async def index(request: Request):
 	pass
 
 
-@app.get("/api/attraction/{attractionId}")
+@app.get("/api/attraction/{attractionId}",    
+	responses={
+    	200: {"model": AttractionData, "description": "景點資料"},
+        400: {"model": Error, "description": "景點編號不正確"},
+        500: {"model": Error, "description": "伺服器內部錯誤"} 
+	})
 async def read_attractionId(request: Request, attractionId: int):
 	query = """SELECT spot.id, spot.name, category.name AS category, spot.description, spot.address, spot.transport, mrt.name AS mrt, spot.lat, spot.lng, spot.images 
     FROM spot INNER JOIN mrt ON spot.id = mrt.spot_id 
@@ -67,10 +98,17 @@ async def read_attractionId(request: Request, attractionId: int):
     WHERE spot.id = %s"""
 	data = execute_query(query, (attractionId,), dictionary=True)
 	if not data:
-		raise HTTPException(status_code=404, detail="Attraction not found")
-	return JSONResponse(content={"data":data[0]})
+		return JSONResponse(content = {"error": True, "message": "Attraction not found"}, status_code=400)
+	if "images" in data[0]:
+		data[0]["images"] = json.loads(data[0]["images"])
+		return AttractionData(data=Attraction.model_validate(data[0]))
 
-@app.get("/api/mrts")
+
+@app.get("/api/mrts", 
+    responses={
+    	200: {"model": Data, "description": "正常運作"},
+        500: {"model": Error, "description": "伺服器內部錯誤"} 
+	})
 async def serch_mrt():
 	query = "SELECT name FROM mrt GROUP BY name ORDER BY COUNT(name) DESC"
 	data = execute_query(query)
@@ -78,5 +116,5 @@ async def serch_mrt():
 	for mrt in data:
 		if mrt[0]!= None:
 			newData.append(mrt[0])
-	return JSONResponse(content={"data":newData})
+	return Data(data = newData)
 
