@@ -17,12 +17,12 @@ mypassword = os.getenv("mypassword")
 
 pool = pooling.MySQLConnectionPool(
 	pool_name = "mypool",
-    pool_size = 5,  
-    pool_reset_session = True,
-    host = "localhost",
-    database = "TaipeiDayTrip",
-    user = "root",
-    password = mypassword,
+	pool_size = 5,  
+	pool_reset_session = True,
+	host = "localhost",
+	database = "TaipeiDayTrip",
+	user = "root",
+	password = mypassword,
 )
 
 def execute_query(query, params = None, dictionary = False):
@@ -84,14 +84,15 @@ async def thankyou(request: Request):
 
 @app.exception_handler(Exception)
 async def custom_500_handler(request: Request, exc: Exception):
-    return JSONResponse(content = {"error": True, "message": "Internal Server Error"}, status_code = 500)
+	return JSONResponse(content = {"error": True, "message": "Internal Server Error"}, status_code = 500)
 
 
-@app.get("/api/attractions",    
-	response_model = SearchAttractionsData,    
+@app.get(
+	"/api/attractions",
+	response_model = SearchAttractionsData,
 	responses={
-    	200: {"model": SearchAttractionsData, "description": "正常運作"},
-        500: {"model": Error, "description": "伺服器內部錯誤"} 
+		200: {"model": SearchAttractionsData, "description": "正常運作"},
+		500: {"model": Error, "description": "伺服器內部錯誤"}
 	}
 )
 async def search_attractions_data(
