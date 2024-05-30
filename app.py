@@ -87,7 +87,7 @@ async def custom_500_handler(request: Request, exc: Exception):
     return JSONResponse(content = {"error": True, "message": "Internal Server Error"}, status_code = 500)
 
 
-@app.get("/api/attrtions",    
+@app.get("/api/attractions",    
 	response_model = SearchAttractionsData,    
 	responses={
     	200: {"model": SearchAttractionsData, "description": "正常運作"},
