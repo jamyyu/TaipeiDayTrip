@@ -16,7 +16,7 @@ load_dotenv()
 mypassword = os.getenv("mypassword")
 
 pool = pooling.MySQLConnectionPool(
-	pool_name = "mypool",
+pool_name = "mypool",
 	pool_size = 5,  
 	pool_reset_session = True,
 	host = "localhost",
