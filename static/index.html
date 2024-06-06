@@ -4,8 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Index</title>
+  <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+  <script defer src="/static/fetchData.js"></script>
 </head>
 <body>
-  
+  <header>
+    <nav class="nav-bar">
+      <div class="left">台北一日遊</div>
+      <div class="right">
+        <div class="menu">
+          <div class="booking">預定行程</div>
+          <div class="signin">登入/註冊</div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <section>
+    <div class="welcome">
+      <div class="welcome-block">
+        <div class="slogan-input-block">
+          <div class="slogan-block">
+            <div class="slogan-title">輕鬆享受台北一日悠閒</div>
+            <div class="slogan-subtitle">探索每個角落，體驗城市的深度旅遊行程</div>
+          </div>
+          <div class="input-block">
+            <input type="text" id="search-input" placeholder="輸入景點名稱查詢" />
+            <div onclick="searchData()" class="search-btn">
+                <img src="/static/serch-icon.png" alt="search-icon" />
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <main>
+    <section class="view">
+      <div class="list-bar">
+        <div class="prevbtn">
+          <img onclick="scrollList(-1)" src="/static/prevbtn.png" alt="previous"/>
+        </div>
+        <div class="mrt-block">
+          <div class="mrt-list">
+          </div>
+        </div>
+        <div class="nextbtn">
+          <img onclick="scrollList(1)" src="/static/nextbtn.png" alt="next"/>
+        </div>
+      </div>
+    </section>
+    <section id=attraction-view class="view">
+    </section>
+  </main>
+  <footer>
+    <div class="copyright">COPYRIGHT © 2021 台北一日遊</div>
+  </footer>
 </body>
 </html>

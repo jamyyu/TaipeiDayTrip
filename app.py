@@ -2,6 +2,7 @@ from fastapi import *
 from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
 import os
+from fastapi.staticfiles import StaticFiles
 import mysql.connector
 from mysql.connector import pooling
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,6 +11,9 @@ from typing import Union
 import json
 
 app=FastAPI()
+
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 load_dotenv()
@@ -107,7 +111,12 @@ async def search_attractions_data(
 		query = """SELECT spot.id, spot.name, category.name AS category, spot.description, spot.address, spot.transport, mrt.name AS mrt, spot.lat, spot.lng, spot.images 
 		FROM spot INNER JOIN mrt ON spot.id = mrt.spot_id 
 		INNER JOIN category ON spot.id = category.spot_id
-		ORDER BY spot.id ASC
+		INNER JOIN (
+			SELECT name, COUNT(name) AS category_count
+			FROM category
+			GROUP BY name
+		) AS CategoryCounts ON category.name = CategoryCounts.name
+		ORDER BY CategoryCounts.category_count DESC, spot.id ASC
 		LIMIT %s OFFSET %s"""
 		data = execute_query(query, params = (limit+1, offset), dictionary = True)
 	else:
