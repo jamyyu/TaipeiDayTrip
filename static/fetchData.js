@@ -1,4 +1,5 @@
 let observer = null;
+let isLoading = false; // 追踪加載狀態
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchAttractions(0, "");
@@ -58,7 +59,8 @@ function observeFooter(nextPage, keyword) {
     const footer = document.querySelector("footer");
     observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && !isLoading) {
+                isLoading = true; 
                 fetch(`/api/attractions?page=${nextPage}&keyword=${keyword}`)
                     .then(response => response.json())
                     .then(result => {
@@ -73,9 +75,11 @@ function observeFooter(nextPage, keyword) {
                         if (nextPage === null) {
                             observer.disconnect();
                         }
+                        isLoading = false;
                     })
                     .catch(error => {
                         console.error("Error fetching data:", error);
+                        isLoading = false;
                 });
             }
         });
@@ -84,6 +88,7 @@ function observeFooter(nextPage, keyword) {
 }
 
 function fetchAttractions(page, keyword) {
+    isLoading = true;
     fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
         .then(response => response.json())
         .then(result => {
@@ -95,6 +100,7 @@ function fetchAttractions(page, keyword) {
                 filteredAttractionList.push({ name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL });
             });
             renderAttractions(filteredAttractionList);
+            isLoading = false;
             return nextPage;
         })
         .then(nextPage => {
@@ -104,6 +110,7 @@ function fetchAttractions(page, keyword) {
         })
         .catch(error => {
             console.error("Error fetching data:", error);
+            isLoading = false;
         });
 }
 
