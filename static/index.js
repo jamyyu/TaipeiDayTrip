@@ -81,7 +81,7 @@ function observeFooter(nextPage, keyword) {
                 });
             }
         });
-    });
+    }, {rootMargin: "30px"});
     observer.observe(footer);
 }
 
