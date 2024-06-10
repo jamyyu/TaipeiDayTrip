@@ -34,7 +34,7 @@ header {
     text-align: left;
     color: #448899;
     flex: none;
-    cursor: url("mouse-24.png"), pointer;  
+    cursor: url("/static/pic/mouse-24.png"), pointer;  
 }
 .right {
     display: flex;
@@ -74,7 +74,7 @@ header {
 .welcome {
     width: 100%;
     height: 320px;
-    background-image:url([orig]\ welcome\ image.png);
+    background-image:url("/static/pic/[orig]\ welcome\ image.png");
     background-size: cover;
     background-repeat: no-repeat; 
     display: flex;
@@ -148,7 +148,7 @@ header {
     background-color: #448899;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    cursor: url("mouse-24.png"), pointer; 
+    cursor: url("/static/pic/mouse-24.png"), pointer; 
 }
 .search-btn img {
     width: 30px;       
@@ -196,7 +196,7 @@ main{
     width: 32px;
     height: 32px;
     opacity: 0.5;
-    cursor: url("mouse-16.png"), pointer; 
+    cursor: url("/static/pic/mouse-16.png"), pointer; 
 }
 .mrt-block {
     width: 100%;
@@ -225,7 +225,7 @@ main{
     justify-content: center;
     align-items: center;
     color: #666666;
-    cursor: url("mouse-16.png"), pointer; 
+    cursor: url("/static/pic/mouse-16.png"), pointer; 
 }
 .mrt-name:hover {
     color: #000000;
