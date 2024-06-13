@@ -14,10 +14,30 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function clearAttractions() {
-    const attractionView = document.getElementById("attraction-view");
-    attractionView.innerHTML = "";
+function fetchAttractions(page, keyword) {
+    fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
+        .then(response => response.json())
+        .then(result => {
+            const nextPage = result.nextPage;
+            const filteredAttractionList = [];
+            const attractionsList = result.data;
+            attractionsList.forEach(attraction => {
+                const imgURL = attraction.images[0];
+                filteredAttractionList.push({id :attraction.id, name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL});
+            });
+            renderAttractions(filteredAttractionList);
+            return nextPage;
+        })
+        .then(nextPage => {
+            if (nextPage !== null) {
+                observeFooter(nextPage, keyword);
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+        });
 }
+
 
 function renderAttractions(filteredAttractionList) {
     const attractionView = document.getElementById("attraction-view");
@@ -25,9 +45,13 @@ function renderAttractions(filteredAttractionList) {
     attractionBlock.className = "attraction-block";
     attractionView.appendChild(attractionBlock);
     for (let i = 1; i <= filteredAttractionList.length; i++) {
+        const link = document.createElement("a");
+        link.setAttribute("href", `/attraction/${filteredAttractionList[i - 1].id}`);
+        attractionBlock.appendChild(link);
+
         const attraction = document.createElement("div");
         attraction.className = `a${i} attraction`;
-        attractionBlock.appendChild(attraction);
+        link.appendChild(attraction);
 
         const imgElement = document.createElement("img");
         imgElement.src = filteredAttractionList[i - 1].img;
@@ -55,6 +79,7 @@ function renderAttractions(filteredAttractionList) {
     }
 }
 
+
 function observeFooter(nextPage, keyword) {
     const footer = document.querySelector("footer");
     observer = new IntersectionObserver((entries) => {
@@ -69,7 +94,7 @@ function observeFooter(nextPage, keyword) {
                     const attractionsList = result.data;
                     attractionsList.forEach(attraction => {
                         const imgURL = attraction.images[0];
-                        filteredAttractionList.push({ name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL });
+                        filteredAttractionList.push({id :attraction.id, name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL});
                     });
                     renderAttractions(filteredAttractionList);
                     if (nextPage === null) {
@@ -80,33 +105,16 @@ function observeFooter(nextPage, keyword) {
                     console.error("Error fetching data:", error);
             });
         }
-    }, {rootMargin: "30px"}); //rootMargin 正值為外擴，負值為內縮
+    }, {rootMargin: "100px"}); //rootMargin 正值為外擴，負值為內縮
     observer.observe(footer);
 }
 
-function fetchAttractions(page, keyword) {
-    fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
-        .then(response => response.json())
-        .then(result => {
-            const nextPage = result.nextPage;
-            const filteredAttractionList = [];
-            const attractionsList = result.data;
-            attractionsList.forEach(attraction => {
-                const imgURL = attraction.images[0];
-                filteredAttractionList.push({ name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL });
-            });
-            renderAttractions(filteredAttractionList);
-            return nextPage;
-        })
-        .then(nextPage => {
-            if (nextPage !== null) {
-                observeFooter(nextPage, keyword);
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching data:", error);
-        });
+
+function clearAttractions() {
+    const attractionView = document.getElementById("attraction-view");
+    attractionView.innerHTML = "";
 }
+
 
 function searchData() {
     const keyword = document.getElementById("search-input").value;
