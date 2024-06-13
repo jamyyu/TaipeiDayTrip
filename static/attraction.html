@@ -23,7 +23,11 @@
     <section class="view">
       <div class="attraction-topblock">
         <div class="img-block">
-          <img/>
+          <div class="img-block_icon">
+            <div class="img-block_icon-prevbtn"></div>
+            <div class="img-block_icon-nextbtn"></div>
+          </div>
+          <div class="img-block_dots"></div>
         </div>
         <div class="booking-block">
           <div class="booking-block__title">景點名稱</div>
@@ -34,22 +38,22 @@
             <form>
               <div class="booking-block__form-date">
                 <label for="date" class="font16-700">選擇日期：</label>
-                <input type="date" id="booking-date" name="booking-date">
+                <input type="date" id="booking-date" name="booking-date" required>
               </div>
               <div class="booking-block__form-time">
                 <label for="time" class="font16-700">選擇時間：</label>
-                <label for="morning" class="la-morning">
+                <label for="morning" class="label-morning font16-400">上半天
                     <input type="radio" id="morning" name="time" value="morning" required>
-                    <div class="font16-400">上半天</div>
+                    <div class="radio-checkmark"></div>
                 </label>
-                <label for="afternoon">
+                <label for="afternoon" class="label-afternoon font16-400">下半天
                     <input type="radio" id="afternoon" name="time" value="afternoon" required>
-                    <div class="font16-400">下半天</div>
+                    <span class="radio-checkmark"></span>
                 </label>
               </div>
               <div class="booking-block__form-price">
                 <div class="font16-700">導覽費用：</div>
-                <div class="font16-400">新台幣2000元</div>
+                <div id="price" class="font16-400">新台幣2000元</div>
               </div>
               <button type="submit" class="booking-block__form-btn">開始預約行程</button>
             </form>
