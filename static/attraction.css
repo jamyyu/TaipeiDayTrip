@@ -587,6 +587,9 @@ footer {
     .img-block_icon {
         top: 157px;
     }
+    .img-block img {
+        border-radius: 0px;
+    }
     .booking-block {
         width: 100%;
         height: 390px;

@@ -252,6 +252,12 @@ main{
     border-radius: 5px;
     overflow: hidden;
     z-index: 1;
+    cursor: url("/static/images/mouse-24.png"), pointer;
+    transition: transform 0.5s, box-shadow 0.5s;
+}
+.attraction:hover {
+    transform: translate(-5px, -5px);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
 }
 .attraction img {
     width: 270px;
