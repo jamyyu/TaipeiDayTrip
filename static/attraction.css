@@ -383,6 +383,7 @@ main{
     color: #FFFFFF;
     border: none;
     cursor: url("/static/images/mouse-24.png"), pointer;
+    white-space: nowrap;
 }
 .attraction-bottomblock {
     border-top: 1px solid #E8E8E8;
