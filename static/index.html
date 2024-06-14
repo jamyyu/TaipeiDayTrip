@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>台北一日遊</title>
-  <link rel="stylesheet" type="text/css" href="/static/style.css"/>
-  <script defer src="/static/fetchData.js"></script>
+  <link rel="icon" href="/static/images/favicon.png" type="image/png">
+  <link rel="stylesheet" type="text/css" href="/static/index.css"/>
+  <script defer src="/static/index.js"></script>
 </head>
 <body>
   <header>
@@ -30,7 +31,7 @@
           <div class="input-block">
             <input type="text" id="search-input" placeholder="輸入景點名稱查詢" />
             <div onclick="searchData()" class="search-btn">
-                <img src="/static/serch-icon.png" alt="search-icon" />
+                <img src="/static/images/serch-icon.png" alt="search-icon" />
             </div>
         </div>
         </div>
@@ -41,14 +42,14 @@
     <section class="view">
       <div class="list-bar">
         <div class="prevbtn">
-          <img onclick="scrollList(-1)" src="/static/prevbtn.png" alt="previous"/>
+          <img onclick="scrollList(-1)" src="/static/images/prevbtn.png" alt="previous"/>
         </div>
         <div class="mrt-block">
           <div class="mrt-list">
           </div>
         </div>
         <div class="nextbtn">
-          <img onclick="scrollList(1)" src="/static/nextbtn.png" alt="next"/>
+          <img onclick="scrollList(1)" src="/static/images/nextbtn.png" alt="next"/>
         </div>
       </div>
     </section>

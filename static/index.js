@@ -9,15 +9,35 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const homebtn = document.querySelector(".left");
     homebtn.addEventListener("click", () => {
-        window.location.href = '/';
+        window.location.href = "/";
     });
 });
 
 
-function clearAttractions() {
-    const attractionView = document.getElementById("attraction-view");
-    attractionView.innerHTML = "";
+function fetchAttractions(page, keyword) {
+    fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
+        .then(response => response.json())
+        .then(result => {
+            const nextPage = result.nextPage;
+            const filteredAttractionList = [];
+            const attractionsList = result.data;
+            attractionsList.forEach(attraction => {
+                const imgURL = attraction.images[0];
+                filteredAttractionList.push({id :attraction.id, name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL});
+            });
+            renderAttractions(filteredAttractionList);
+            return nextPage;
+        })
+        .then(nextPage => {
+            if (nextPage !== null) {
+                observeFooter(nextPage, keyword);
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+        });
 }
+
 
 function renderAttractions(filteredAttractionList) {
     const attractionView = document.getElementById("attraction-view");
@@ -25,9 +45,13 @@ function renderAttractions(filteredAttractionList) {
     attractionBlock.className = "attraction-block";
     attractionView.appendChild(attractionBlock);
     for (let i = 1; i <= filteredAttractionList.length; i++) {
+        const link = document.createElement("a");
+        link.setAttribute("href", `/attraction/${filteredAttractionList[i - 1].id}`);
+        attractionBlock.appendChild(link);
+
         const attraction = document.createElement("div");
         attraction.className = `a${i} attraction`;
-        attractionBlock.appendChild(attraction);
+        link.appendChild(attraction);
 
         const imgElement = document.createElement("img");
         imgElement.src = filteredAttractionList[i - 1].img;
@@ -55,59 +79,42 @@ function renderAttractions(filteredAttractionList) {
     }
 }
 
+
 function observeFooter(nextPage, keyword) {
     const footer = document.querySelector("footer");
     observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !loadedPages.has(nextPage)) {
-                loadedPages.add(nextPage);
-                fetch(`/api/attractions?page=${nextPage}&keyword=${keyword}`)
-                    .then(response => response.json())
-                    .then(result => {
-                        nextPage = result.nextPage;
-                        const filteredAttractionList = [];
-                        const attractionsList = result.data;
-                        attractionsList.forEach(attraction => {
-                            const imgURL = attraction.images[0];
-                            filteredAttractionList.push({ name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL });
-                        });
-                        renderAttractions(filteredAttractionList);
-                        if (nextPage === null) {
-                            observer.disconnect();
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error fetching data:", error);
-                });
-            }
-        });
-    });
+        const entry = entries[0];
+        if (entry.isIntersecting && !loadedPages.has(nextPage)) {
+            loadedPages.add(nextPage);
+            fetch(`/api/attractions?page=${nextPage}&keyword=${keyword}`)
+                .then(response => response.json())
+                .then(result => {
+                    nextPage = result.nextPage;
+                    const filteredAttractionList = [];
+                    const attractionsList = result.data;
+                    attractionsList.forEach(attraction => {
+                        const imgURL = attraction.images[0];
+                        filteredAttractionList.push({id :attraction.id, name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL});
+                    });
+                    renderAttractions(filteredAttractionList);
+                    if (nextPage === null) {
+                        observer.disconnect();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+            });
+        }
+    }, {rootMargin: "100px"}); //rootMargin 正值為外擴，負值為內縮
     observer.observe(footer);
 }
 
-function fetchAttractions(page, keyword) {
-    fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
-        .then(response => response.json())
-        .then(result => {
-            const nextPage = result.nextPage;
-            const filteredAttractionList = [];
-            const attractionsList = result.data;
-            attractionsList.forEach(attraction => {
-                const imgURL = attraction.images[0];
-                filteredAttractionList.push({ name: attraction.name, mrt: attraction.mrt, cat: attraction.category, img: imgURL });
-            });
-            renderAttractions(filteredAttractionList);
-            return nextPage;
-        })
-        .then(nextPage => {
-            if (nextPage !== null) {
-                observeFooter(nextPage, keyword);
-            }
-        })
-        .catch(error => {
-            console.error("Error fetching data:", error);
-        });
+
+function clearAttractions() {
+    const attractionView = document.getElementById("attraction-view");
+    attractionView.innerHTML = "";
 }
+
 
 function searchData() {
     const keyword = document.getElementById("search-input").value;
@@ -122,10 +129,10 @@ function searchData() {
 
 document.addEventListener("DOMContentLoaded", function getMRT() {
     fetch("/api/mrts")
-    .then((response) => {
+    .then(response => {
         return response.json();
     })
-    .then((result)=>{
+    .then(result => {
         let mrts = result.data
         const mrtList = document.querySelector(".mrt-list")
         if (mrtList.children.length > 0) {
@@ -143,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function getMRT() {
 })
 
 
-let scrollPosition = 0;
+let scrollPosition = 0; //紀錄當前滾動位置
 
 function getScrollAmount() {
     const windowWidth = window.innerWidth;
@@ -158,8 +165,8 @@ function getScrollAmount() {
 
 function scrollList(direction) {
     const list = document.querySelector(".mrt-list");
-    const listWidth = list.scrollWidth;
-    const blockWidth = list.parentElement.offsetWidth;
+    const listWidth = list.scrollWidth; // 列表總寬度
+    const blockWidth = list.parentElement.offsetWidth; //列表可視區域的寬度
     const scrollAmount = getScrollAmount(); // 根據視窗尺寸動態獲取滾動量
 
     scrollPosition += direction * scrollAmount;
