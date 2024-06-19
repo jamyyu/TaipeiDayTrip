@@ -2,21 +2,96 @@ let observer = null;
 const loadedPages = new Set(); 
 
 document.addEventListener("DOMContentLoaded", () => {
+    //載入第0頁圖片
     fetchAttractions(0, "");
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
+    //回首頁
     const homebtn = document.querySelector(".left");
     homebtn.addEventListener("click", () => {
         window.location.href = "/";
     });
+    //處理登入/註冊點擊
+    const signinSignup = document.querySelector(".signin-signup");
+    const signin = document.getElementById("signin");
+    const signup = document.getElementById("signup");
+    signinSignup.addEventListener("click", () => {
+        signin.classList.remove("hide");
+        signup.classList.add("hide");
+    });
+    //處理尚未註冊點擊
+    const goToSignup = document.getElementById("go-to-signup");
+    goToSignup.addEventListener("click", () => {
+        signin.classList.add("hide");
+        signup.classList.toggle("hide");
+    });
+    //回到註冊
+    const backToSignin = document.getElementById("back-to-signin");
+    backToSignin.addEventListener("click", () => {
+        signup.classList.add("hide");
+        signin.classList.toggle("hide");
+    })
+    //提交表單
+    signup.addEventListener("submit",(e) => {
+        e.preventDefault();
+        const signupName = document.getElementById("signup-name").value;
+        const signupEmail = document.getElementById("signup-email").value;
+        const signupPassword =document.getElementById("signup-password").value;
+        fetch("/api/user",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: signupName, email: signupEmail, password: signupPassword })
+        })
+        .then(response => {return response.json()})
+        .then(result => {
+            if (result.ok) {
+                const signupResponse = document.getElementById("signup-response");
+                const fontColor = document.querySelector(".font-red");
+                signupResponse.textContent = "註冊成功，請登入系統";
+                fontColor.style.color = "green"
+                signupResponse.classList.remove("hide");
+                setTimeout(() => {
+                    signupResponse.classList.add("hide");
+                }, 2000); // 2秒後隱藏
+            } else {
+                throw result;
+            }
+        })
+        .catch(error => {
+            console.error("Error", error);
+            if (error.detail){
+                const emailError = error.detail.find(e => e.loc.includes("email"));//遍歷detail列表，找到loc裡面有email的
+                if (emailError) {
+                    const signupResponse = document.getElementById("signup-response");
+                    const fontColor = document.querySelector(".font-red");
+                    signupResponse.textContent = "電子郵件格式錯誤";
+                    fontColor.style.color = "red"
+                    signupResponse.classList.remove("hide");
+                    setTimeout(() => {
+                        signupResponse.classList.add("hide");
+                    }, 2000); // 2秒後隱藏
+                } 
+            }
+        });
+    })
 });
+
+
+function closeSignin(){
+    const signin = document.getElementById("signin");
+    signin.classList.add("hide");
+}
+
+
+function closeSignup(){
+    const signup = document.getElementById("signup");
+    signup.classList.add("hide");
+}
 
 
 function fetchAttractions(page, keyword) {
     fetch(`/api/attractions?page=${page}&keyword=${keyword}`)
-        .then(response => response.json())
+        .then(response => {return response.json()})
         .then(result => {
             const nextPage = result.nextPage;
             const filteredAttractionList = [];
@@ -87,7 +162,7 @@ function observeFooter(nextPage, keyword) {
         if (entry.isIntersecting && !loadedPages.has(nextPage)) {
             loadedPages.add(nextPage);
             fetch(`/api/attractions?page=${nextPage}&keyword=${keyword}`)
-                .then(response => response.json())
+                .then(response => {return response.json()})
                 .then(result => {
                     nextPage = result.nextPage;
                     const filteredAttractionList = [];

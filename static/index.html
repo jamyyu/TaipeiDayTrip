@@ -15,10 +15,32 @@
       <div class="right">
         <div class="menu">
           <div class="booking">預定行程</div>
-          <div class="signin">登入/註冊</div>
+          <div class="signin-signup">登入/註冊</div>
         </div>
       </div>
     </nav>
+    <form id=signin class="hide">
+        <div class="decorator-bar"></div>
+        <div class="container">
+          <div class="container_title">登入會員帳號<img onclick="closeSignin()" src="/static/images/icon-close.png" class="icon-close"/></div>
+          <input type="email" id="signin-container_email" name="email" placeholder="輸入電子信箱" required>
+          <input type="password" id="signin-container_password" name="password" placeholder="輸入密碼" required>
+          <button type="submit">登入帳戶</button>
+          <div id="go-to-signup" class="font16-500">還沒有帳戶？點此註冊</div>
+        </div>
+    </form>
+    <form id="signup" class="hide">
+        <div class="decorator-bar"></div>
+        <div class="container">
+          <div class="container_title">註冊會員帳號<img onclick="closeSignup()" src="/static/images/icon-close.png" class="icon-close"/></div>
+          <input type="text" id="signup-name" name="name" placeholder="輸入姓名" required>
+          <input type="email" id="signup-email" name="email" placeholder="輸入電子郵件" required>
+          <input type="password" id="signup-password" name="password" placeholder="輸入密碼" required>
+          <button type="submit">註冊新帳戶</button>
+          <div id="signup-response" class="font-red hide">Email已經註冊帳戶</div>
+          <div id="back-to-signin" class="font16-500">已經有帳戶了？點此登入</div>
+        </div>
+    </form>
   </header>
   <section>
     <div class="welcome">
