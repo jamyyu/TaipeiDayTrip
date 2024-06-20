@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>台北一日遊</title>
   <link rel="icon" href="/static/images/favicon.png" type="image/png">
-  <link rel="stylesheet" type="text/css" href="/static/index.css"/>
-  <script defer src="/static/index.js"></script>
+  <link rel="stylesheet" type="text/css" href="/static/css/index.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/header.css"/>
+  <script defer src="/static/js/index.js"></script>
+  <script defer src="/static/js/header.js"></script>
 </head>
 <body>
   <header>
@@ -16,6 +18,7 @@
         <div class="menu">
           <div class="booking">預定行程</div>
           <div class="signin-signup">登入/註冊</div>
+          <div class="signout hide">登出系統</div>
         </div>
       </div>
     </nav>
@@ -23,9 +26,10 @@
         <div class="decorator-bar"></div>
         <div class="container">
           <div class="container_title">登入會員帳號<img onclick="closeSignin()" src="/static/images/icon-close.png" class="icon-close"/></div>
-          <input type="email" id="signin-container_email" name="email" placeholder="輸入電子信箱" required>
-          <input type="password" id="signin-container_password" name="password" placeholder="輸入密碼" required>
+          <input type="email" id="signin-email" name="email" placeholder="輸入電子信箱" required>
+          <input type="password" id="signin-password" name="password" placeholder="輸入密碼" required>
           <button type="submit">登入帳戶</button>
+          <div id="signin-response" class="signin-font hide">電子郵件或密碼錯誤</div>
           <div id="go-to-signup" class="font16-500">還沒有帳戶？點此註冊</div>
         </div>
     </form>
@@ -37,7 +41,7 @@
           <input type="email" id="signup-email" name="email" placeholder="輸入電子郵件" required>
           <input type="password" id="signup-password" name="password" placeholder="輸入密碼" required>
           <button type="submit">註冊新帳戶</button>
-          <div id="signup-response" class="font-red hide">Email已經註冊帳戶</div>
+          <div id="signup-response" class="signup-font hide">Email已經註冊帳戶</div>
           <div id="back-to-signin" class="font16-500">已經有帳戶了？點此登入</div>
         </div>
     </form>
