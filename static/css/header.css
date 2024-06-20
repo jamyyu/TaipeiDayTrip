@@ -136,9 +136,7 @@ header {
     right: 0;
     cursor: url("/static/images/mouse-24.png"), pointer;
 }
-input[type=text],
-input[type=email],
-input[type=password] {
+.input-style {
     width: 310px;
     height: 47px;
     margin-bottom: 10px;
@@ -147,16 +145,14 @@ input[type=password] {
     border-radius: 5px;
     box-sizing: border-box;
 }
-input[type=email]::placeholder,
-input[type=password]::placeholder, 
-input[type=text]::placeholder{
+.input-style::placeholder {
     font-size: 16px;
     font-weight: 500;
     line-height: 13.3px;
     text-align: left;
     color: #757575;
 }
-button[type=submit] {
+.submit-style {
     width: 310px;
     height: 47px;
     margin-bottom: 10px;

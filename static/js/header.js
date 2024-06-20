@@ -1,15 +1,10 @@
-window.onload = function() {
-    checkAuth();
-};
-
-
 document.addEventListener("DOMContentLoaded", () => {
     //回首頁
     const homebtn = document.querySelector(".left");
     homebtn.addEventListener("click", () => {
         window.location.href = "/";
     });
-    //處理登入/註冊點擊
+    //登入/註冊點擊
     const signinSignup = document.querySelector(".signin-signup");
     const signin = document.getElementById("signin");
     const signup = document.getElementById("signup");
@@ -33,7 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
     signUp();
     //提交登入表單
     signIn();
-    //登出
+    //點擊登出
+    const signout = document.querySelector(".signout");
+    signout.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        window.location.reload()
+    })
 });
 
 
@@ -105,7 +105,7 @@ function signIn(){
         fetch("/api/user/auth",{
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({ email: signinEmail, password: signinPassword })
         })
@@ -146,22 +146,4 @@ function closeSignin(){
 function closeSignup(){
     const signup = document.getElementById("signup");
     signup.classList.add("hide");
-}
-
-
-// 檢查 LocalStorage 中是否有 token
-function checkAuth() {
-    const token = localStorage.getItem("token");
-    if (token) {
-        const signOut = document.querySelector(".signout");
-        const signinSignup =document.querySelector(".signin-signup");
-        signinSignup.classList.add("hide");
-        signOut.classList.remove("hide");
-
-    } else {
-        const signOut = document.querySelector(".signout");
-        const signinSignup =document.querySelector(".signin-signup");
-        signOut.classList.add("hide");
-        signinSignup.classList.remove("hide");
-    }
 }

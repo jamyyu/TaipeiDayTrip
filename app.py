@@ -2,10 +2,10 @@ from fastapi import *
 from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
 import os 
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
 import mysql.connector 
 from mysql.connector import pooling
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr 
 from typing import Union
 import json
@@ -21,6 +21,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 load_dotenv()
 mypassword = os.getenv("mypassword")
+key =os.getenv("mykey")
 
 pool = pooling.MySQLConnectionPool(
 	pool_name = "mypool",
@@ -70,7 +71,7 @@ class Attraction(BaseModel):
 class AttractionData(BaseModel):
 	data: Attraction
 class Data(BaseModel):
-	data: Union [list, dict]
+	data: Union [list, dict, str]
 class SearchAttractionsData(BaseModel):
 	nextPage: Union [int, None] = None
 	data: Union [Attraction, list, None] = []
@@ -215,7 +216,7 @@ def hash_password(password: str) -> str:
     return hashed_password.decode("utf-8")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
 
 
 @app.post(
@@ -259,7 +260,6 @@ async def signin(user: UserSignin):
 	if not data or not verify_password(password, data[0]["password"]):
 		return JSONResponse(content = {"error": True, "message": "Invalid email or password"}, status_code = 400)
 	else:
-		key = "jamy"
 		now = datetime.now()
 		expiration = now + timedelta(days=7)
 		exp_timestamp = int(expiration.timestamp())
@@ -269,11 +269,26 @@ async def signin(user: UserSignin):
     	"email": data[0]["email"],
     	"exp": exp_timestamp  # 添加過期時間
 		}
-		encoded = jwt.encode(payload, key, algorithm="HS256")
+		encoded = jwt.encode(payload, key, algorithm = "HS256")
 		#print(encoded)
 		return Token(token = encoded)
+	
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/auth")
 
 
-
+@app.get(
+	"/api/user/auth",
+	response_model = Data,
+	responses={
+    	200: {"model": Data, "description": "已登入的會員資料，null 表示未登入"},
+	}
+)
+async def check_auth(token: str = Depends(oauth2_scheme)):
+	try:
+		payload = jwt.decode(token, key, algorithms = "HS256")
+		return Data(data = {"id": payload["id"], "name": payload["name"], "email": payload["email"]})
+	except:
+		return Data(data = "null")
 
 
