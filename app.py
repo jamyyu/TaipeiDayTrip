@@ -1,14 +1,17 @@
 from fastapi import *
 from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
-import os
+import os 
+from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
-import mysql.connector
+import mysql.connector 
 from mysql.connector import pooling
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr 
 from typing import Union
 import json
+import bcrypt
+import jwt
+from datetime import datetime, timedelta
 
 app=FastAPI()
 
@@ -18,10 +21,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 load_dotenv()
 mypassword = os.getenv("mypassword")
+key =os.getenv("mykey")
 
 pool = pooling.MySQLConnectionPool(
 	pool_name = "mypool",
-	pool_size = 5,  
+	pool_size = 10,  
 	pool_reset_session = True,
 	host = "localhost",
 	database = "TaipeiDayTrip",
@@ -48,6 +52,8 @@ def execute_query(query, params = None, dictionary = False):
             cnx.close()
 
 
+class Success(BaseModel):
+	ok: bool
 class Error(BaseModel):
 	error: bool
 	message: str
@@ -65,10 +71,19 @@ class Attraction(BaseModel):
 class AttractionData(BaseModel):
 	data: Attraction
 class Data(BaseModel):
-	data: Union [list, dict]
+	data: Union [list, dict, str]
 class SearchAttractionsData(BaseModel):
 	nextPage: Union [int, None] = None
 	data: Union [Attraction, list, None] = []
+class UserSignup(BaseModel):
+	name:str
+	email:EmailStr
+	password:str
+class UserSignin(BaseModel):
+	email:str
+	password:str
+class Token(BaseModel):
+	token: str
 
 
 # Static Pages (Never Modify Code in this Block)
@@ -99,10 +114,9 @@ async def custom_500_handler(request: Request, exc: Exception):
 		500: {"model": Error, "description": "伺服器內部錯誤"}
 	}
 )
-async def search_attractions_data(
-    request: Request, 
+async def search_attractions_data( 
     page:int = Query(..., ge=0, description="要取得的分頁，每頁 12 筆資料"), 
-    keyword: str = Query(None, description="用來完全比對捷運站名稱、或模糊比對景點名稱的關鍵字，沒有給定則不做篩選")
+    keyword:str = Query(None, description="用來完全比對捷運站名稱、或模糊比對景點名稱的關鍵字，沒有給定則不做篩選")
 ):
 	limit = 12
 	offset = page*limit
@@ -130,7 +144,7 @@ async def search_attractions_data(
 			FROM spot INNER JOIN mrt ON spot.id = mrt.spot_id 
 			INNER JOIN category ON spot.id = category.spot_id
 			WHERE mrt.name = %s
-			ORDER BY spot.id ASC
+			ORDER BY category.name DESC
 			LIMIT %s OFFSET %s"""
 			data = execute_query(query, params = (keyword, limit+1, offset), dictionary = True)
 		else:
@@ -141,7 +155,7 @@ async def search_attractions_data(
 			FROM spot INNER JOIN mrt ON spot.id = mrt.spot_id 
 			INNER JOIN category ON spot.id = category.spot_id
 			WHERE spot.name LIKE %s
-			ORDER BY spot.id ASC
+			ORDER BY category.name DESC
 			LIMIT %s OFFSET %s"""
 			data = execute_query(query, params = (f"%{keyword}%", limit+1, offset), dictionary = True)
 	if data is None:
@@ -165,7 +179,7 @@ async def search_attractions_data(
         500: {"model": Error, "description": "伺服器內部錯誤"} 
 	}
 )
-async def read_attractionId(request: Request, attractionId: int):
+async def read_attractionId(attractionId: int):
 	query = """SELECT spot.id, spot.name, category.name AS category, spot.description, spot.address, spot.transport, mrt.name AS mrt, spot.lat, spot.lng, spot.images 
     FROM spot INNER JOIN mrt ON spot.id = mrt.spot_id 
     INNER JOIN category ON spot.id = category.spot_id 
@@ -186,7 +200,7 @@ async def read_attractionId(request: Request, attractionId: int):
         500: {"model": Error, "description": "伺服器內部錯誤"} 
 	}
 )
-async def mrt_list(request: Request):
+async def mrt_list():
 	query = "SELECT name FROM mrt GROUP BY name ORDER BY COUNT(name) DESC"
 	data = execute_query(query)
 	newData = []
@@ -194,4 +208,87 @@ async def mrt_list(request: Request):
 		if mrt[0] != None:
 			newData.append(mrt[0])
 	return Data(data = newData)
+
+
+def hash_password(password: str) -> str:
+    salt = bcrypt.gensalt() #生成一個新的隨機鹽值
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+    return hashed_password.decode("utf-8")
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
+
+
+@app.post(
+	"/api/user",
+	response_model = Success,
+	responses={
+    	200: {"model": Success, "description": "註冊成功"},
+		400: {"model": Error, "description": "註冊失敗，重複的 Email 或其他原因"},
+        500: {"model": Error, "description": "伺服器內部錯誤"} 
+	}
+)
+async def signup(user: UserSignup):
+	query = "SELECT email FROM user WHERE email=%s"
+	name = user.name
+	email = user.email
+	password =user.password
+	data = execute_query(query, (email,), dictionary = True)
+	if data:
+		return JSONResponse(content = {"error": True, "message": "Email already registered"}, status_code = 400)
+	else:
+		hashed_password = hash_password(password)
+		query = "INSERT INTO user (name, email, password) VALUES (%s, %s, %s)"
+		execute_query(query, (name, email, hashed_password))
+		return Success(ok = True)
+
+
+@app.put(
+	"/api/user/auth",
+	response_model = Token,
+	responses={
+    	200: {"model": Token, "description": "登入成功，取得有效期為七天的 JWT 加密字串"},
+		400: {"model": Error, "description": "登入失敗，帳號或密碼錯誤或其他原因"},
+        500: {"model": Error, "description": "伺服器內部錯誤"} 
+	}
+)
+async def signin(user: UserSignin):
+	email = user.email
+	password = user.password
+	query = "SELECT id, name, email, password FROM user WHERE email=%s"
+	data = execute_query(query, (email,), dictionary=True)
+	if not data or not verify_password(password, data[0]["password"]):
+		return JSONResponse(content = {"error": True, "message": "Invalid email or password"}, status_code = 400)
+	else:
+		now = datetime.now()
+		expiration = now + timedelta(days=7)
+		exp_timestamp = int(expiration.timestamp())
+		payload = {
+    	"id": data[0]["id"],
+   		"name": data[0]["name"],
+    	"email": data[0]["email"],
+    	"exp": exp_timestamp  # 添加過期時間
+		}
+		encoded = jwt.encode(payload, key, algorithm = "HS256")
+		#print(encoded)
+		return Token(token = encoded)
+	
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/auth")
+
+
+@app.get(
+	"/api/user/auth",
+	response_model = Data,
+	responses={
+    	200: {"model": Data, "description": "已登入的會員資料，null 表示未登入"},
+	}
+)
+async def check_auth(token: str = Depends(oauth2_scheme)):
+	try:
+		payload = jwt.decode(token, key, algorithms = "HS256")
+		return Data(data = {"id": payload["id"], "name": payload["name"], "email": payload["email"]})
+	except:
+		return Data(data = "null")
+
 

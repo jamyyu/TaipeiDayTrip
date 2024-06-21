@@ -1,9 +1,49 @@
+window.onload = function() {
+    checkAuth();
+};
+
+
+function renderAuthPage(){
+    const signOut = document.querySelector(".signout");
+    const signinSignup = document.querySelector(".signin-signup");
+    signinSignup.classList.add("hide");
+    signOut.classList.remove("hide");
+}
+
+
+function renderUnauthPage(){
+    const signOut = document.querySelector(".signout");
+    const signinSignup = document.querySelector(".signin-signup");
+    signOut.classList.add("hide");
+    signinSignup.classList.remove("hide");
+}
+
+
+// 檢查 LocalStorage 中是否有 token
+function checkAuth() {
+    const token = localStorage.getItem("token");
+    fetch("/api/user/auth",{
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        user_info = data["data"]
+        if (user_info === "null"){
+            renderUnauthPage()
+        }
+        else{
+            renderAuthPage()
+        }
+    })
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
-    // 處理 home 按鈕點擊
-    const homebtn = document.querySelector(".left");
-    homebtn.addEventListener("click", () => {
-        window.location.href = "/";
-    });
     // 處理預約時間點擊
     const morning = document.getElementById("morning");
     const afternoon = document.getElementById("afternoon");
@@ -71,7 +111,7 @@ function renderAttractions(data){
             imgElement.classList.add("active");
         }
         imgBlock.appendChild(imgElement);
-        const dot =document.createElement("span");
+        const dot = document.createElement("span");
         if (index === 0) {
             dot.classList.add("active");
         }
@@ -84,8 +124,8 @@ function renderAttractions(data){
 const prevBtn = document.querySelector(".img-block_icon-prevbtn");
 const nextBtn = document.querySelector(".img-block_icon-nextbtn");
 
-prevBtn.addEventListener("click", () => showImage( (currentIndex - 1 + images.length) % images.length ));
-nextBtn.addEventListener("click", () => showImage( (currentIndex + 1) % images.length));
+prevBtn.addEventListener("click", () => showImage((currentIndex - 1 + images.length) % images.length));
+nextBtn.addEventListener("click", () => showImage((currentIndex + 1) % images.length));
 
 let currentIndex = 0
 
