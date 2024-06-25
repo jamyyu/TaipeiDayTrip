@@ -6,23 +6,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     //登入/註冊點擊
     const signinSignup = document.querySelector(".signin-signup");
-    const signin = document.getElementById("signin");
-    const signup = document.getElementById("signup");
+    const signinDialog = document.getElementById("signinDialog");
+    const signupDialog = document.getElementById("signupDialog");
     signinSignup.addEventListener("click", () => {
-        signin.classList.remove("hide");
-        signup.classList.add("hide");
+        signinDialog.showModal();
+        signupDialog.close();
     });
     //處理尚未註冊點擊
     const goToSignup = document.getElementById("go-to-signup");
     goToSignup.addEventListener("click", () => {
-        signin.classList.add("hide");
-        signup.classList.toggle("hide");
+        signinDialog.close();
+        signupDialog.showModal();
     });
-    //回到註冊
+    //回到登入
     const backToSignin = document.getElementById("back-to-signin");
     backToSignin.addEventListener("click", () => {
-        signup.classList.add("hide");
-        signin.classList.toggle("hide");
+        signinDialog.showModal();
+        signupDialog.close();
     })
     //提交註冊表單
     signUp();
@@ -137,13 +137,6 @@ function signIn(){
 }
 
 
-function closeSignin(){
-    const signin = document.getElementById("signin");
-    signin.classList.add("hide");
-}
-
-
-function closeSignup(){
-    const signup = document.getElementById("signup");
-    signup.classList.add("hide");
+function closeDialog(dialogId) {
+    document.getElementById(dialogId).close();
 }
