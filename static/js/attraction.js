@@ -1,58 +1,13 @@
-window.onload = function() {
-    checkAuth();
-};
-
-
-function renderAuthPage(){
-    const signOut = document.querySelector(".signout");
-    const signinSignup = document.querySelector(".signin-signup");
-    signinSignup.classList.add("hide");
-    signOut.classList.remove("hide");
-}
-
-
-function renderUnauthPage(){
-    const signOut = document.querySelector(".signout");
-    const signinSignup = document.querySelector(".signin-signup");
-    signOut.classList.add("hide");
-    signinSignup.classList.remove("hide");
-}
-
-
-// 檢查 LocalStorage 中是否有 token
-function checkAuth() {
-    const token = localStorage.getItem("token");
-    fetch("/api/user/auth",{
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-        }
-    })
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
-        user_info = data["data"]
-        if (user_info === "null"){
-            renderUnauthPage()
-        }
-        else{
-            renderAuthPage()
-        }
-    })
-}
-
-
 document.addEventListener("DOMContentLoaded", () => {
-    // 處理預約時間點擊
+    // 預約時間點擊
     const morning = document.getElementById("morning");
     const afternoon = document.getElementById("afternoon");
     const price = document.getElementById("price")
     morning.addEventListener("click", () => {
-        price.textContent = "新台幣2000元"
+        price.textContent = "2000"
     })
     afternoon.addEventListener("click", () => {
-        price.textContent = "新台幣2500元"
+        price.textContent = "2500"
     })
     // 處理景點ID
     const pathParts = window.location.pathname.split("/");
@@ -62,6 +17,41 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         console.error("No attraction ID provided in the URL");
     }
+    // 開始預約行程按鈕點擊
+    const bookingForm = document.getElementById("booking-block__form");
+    const signinSignup = document.querySelector(".signin-signup");
+    bookingForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (signinSignup.classList.contains("hide")) {
+            let currentUrl = window.location.href;
+            let parts = currentUrl.split("/");
+            let attractionId = parts[parts.length-1];
+            const bookingDate = document.getElementById("booking-date").value;
+            const bookingTime = document.querySelector('input[name="time"]:checked').value;
+            const bookingPrice = document.getElementById("price").textContent;
+            const token = localStorage.getItem("token");
+            //console.log(attractionId,bookingDate,bookingTime,bookingPrice);
+            fetch("/api/booking",{
+                method:"POST",
+                headers:{
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "attractionId": attractionId, "date": bookingDate, "time": bookingTime, "price": bookingPrice })
+            })
+            .then(response => {return response.json()})
+            .then(result => {
+                if (result.ok){
+                    window.location.href = "/booking";
+                }
+                if (result.message === "Date must be after today"){
+                    alert("預定日期需在明日之後")
+                }
+            })
+        } else {
+            signinDialog.showModal();
+        }
+    })
 });
 
 
