@@ -304,14 +304,14 @@ footer {
     margin-right: auto;
 }
 
-@media (min-width: 600px) and (max-width: 1200px){
+@media (min-width: 800px) and (max-width: 1200px){
     .nav-bar {
         margin: 10px 0px 10px 10px;
     }
     .attraction-block {
         width: 100%;
         height: 100%;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
     .attraction{
         width: 100%;
@@ -377,7 +377,7 @@ footer {
     }
 }
 
-@media (max-width: 600px){
+@media (max-width: 800px){
     .nav-bar {
         margin: 10px 0px 10px 10px;
     }
