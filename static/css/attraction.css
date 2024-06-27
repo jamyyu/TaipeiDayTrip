@@ -282,6 +282,9 @@ main{
     align-items: center;
     box-sizing: border-box;   
 }
+.booking-block__form-price-container {
+    display: flex;
+}
 .font16-400 {
     font-size: 16px;
     font-weight: 400;
@@ -399,7 +402,7 @@ footer {
 
 @media (min-width: 800px) and (max-width: 1200px){
     .nav-bar {
-        margin: 10px 0px 10px 10px;
+        margin: 10px 0px 10px 10px !important;
     }
     .img-block {
         width: 100%;
@@ -494,7 +497,7 @@ footer {
         flex: 1; 
     }
     .nav-bar {
-        margin: 10px 0px 10px 10px;
+        margin: 10px 0px 10px 10px !important;
     }
     .attraction-topblock {
         width: 100%;

@@ -1,0 +1,377 @@
+main{
+    margin-top: 40px;
+    margin-bottom: 40px;
+    flex: 1; 
+}
+.view {
+    display: block;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.headline {
+    display: flex;
+    width: 1000px;
+    height: 27px;
+    margin: 0px auto 30px auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+.font19-700 {
+    font-size: 19px;
+    font-weight: 700;
+    text-align: left;
+    color: #666666;
+    margin-right: 5px;
+}
+.booking-block {
+    width: 980px;
+    height: 200px;
+    margin: 30px auto 40px auto;
+    display: flex;
+    box-sizing: border-box;
+}
+.booking-block img{
+    width: 250px;
+    height: 200px;
+}
+.booking-block__info {
+    width: 700px;
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-left: 30px;
+    margin-bottom: 30px;
+}
+.booking-block__info img {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: url("/static/images/mouse-24.png"), pointer;
+}
+.booking-block__info-title{
+    display: flex;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: left;
+    color: #448899;
+}
+.booking-block__info-container {
+    width: 700px;
+    height: 24px;
+    margin-bottom: 10px;
+    display: flex;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    color: #666666;
+}
+.booking-block__price-container {
+    display: flex;
+}
+.separator-block {
+    width: 1200px;
+    border-top: 1px solid #E8E8E8;
+}
+.contact-block {
+    width: 980px;
+    height: 227px;
+    margin: 40px auto 40px auto;
+    display: flex;
+    flex-direction: column;
+}
+.contact-block__title {
+    height: 24px;
+    margin-bottom: 20px;
+    font-size: 19px;
+    font-weight: 700;
+    text-align: left;
+    color: #666666;
+}
+.contact-block label {
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    color: #666666;
+    margin-bottom: 15px;
+}
+.contact-block input {
+    width: 200px;
+    height: 38px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #E8E8E8;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+}
+.font16-700 {
+    font-size: 16px;
+    font-weight: 700;
+    text-align: left;
+    color: #666666;
+}
+.payment-block {
+    width: 980px;
+    height: 188px;
+    margin: 40px auto 40px auto;
+    display: flex;
+    flex-direction: column;
+}
+.payment-block__title {
+    margin-bottom: 20px;
+    font-size: 19px;
+    font-weight: 700;
+    text-align: left;
+    color: #666666;
+    margin-right: 5px;
+}
+.payment-block label {
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    color: #666666;
+    margin-bottom: 15px;
+}
+.payment-block input {
+    width: 200px;
+    height: 38px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #E8E8E8;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+}
+.confirm-block {
+    width: 980px;
+    height: 100px;
+    margin: 40px auto 0px auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+.confirm-block__total {
+    width: 980px;
+    height: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+.btn__container {
+    display: flex;
+    justify-content: flex-end;
+}
+.confirm-block__btn {
+    width: 173px;
+    height: 36px;
+    padding: 10px 20px 10px 20px;
+    margin-top: 22px;
+    margin-bottom: 22px;
+    border-radius: 5px;
+    background-color: #448899;
+    font-size: 19px;
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #FFFFFF;
+    border: none;
+    cursor: url("/static/images/mouse-24.png"), pointer;
+    white-space: nowrap;
+}
+.no-schedule {
+    display: flex;
+    width: 1000px;
+    height: 24px;
+    margin: 0px auto 0px auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    color: #666666;
+}
+footer {
+    width: 100%;
+    height: 104px;
+    background-color: #757575;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.copyright {
+    width: 234px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+    white-space: nowrap;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+@media (min-width: 600px) and (max-width: 1200px){
+    main {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .nav-bar {
+        margin: 10px 0px 10px 10px !important;
+    }
+    .headline {
+        width: 100%;
+        height: 27px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .booking-block {
+        width: 100%;
+        height: 200px;
+    }
+    .booking-block img{
+        width: 250px;
+        height: 200px;
+    }
+    .booking-block__info {
+        width: 100%;
+        height: 170px;
+    }
+    .booking-block__info img {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        cursor: url("/static/images/mouse-24.png"), pointer;
+    }
+    .booking-block__info-container {
+        width: 100%;
+        height: 24px;
+    }
+    .separator-block {
+        width: 100%;
+    }
+    .contact-block {
+        width: 100%;
+        height: fit-content;
+    }
+    .payment-block {
+        width: 100%;
+        height: 188px;
+    }
+    .confirm-block {
+        width: 100%;
+        height: 100px;
+    }
+    .confirm-block__total {
+        width: 100%;
+        height: 20px;
+    }
+    .no-schedule {
+        width: 100%;
+        height: 24px;
+        margin: 0px auto 0px auto;
+        padding-left: 0px;
+        padding-right: 0px;
+        box-sizing: border-box;
+    }
+}
+
+
+@media (max-width: 600px){
+    main {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .nav-bar {
+        margin: 10px 0px 10px 10px !important;
+    }
+    .headline {
+        width: 100%;
+        height: 27px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .booking-block {
+        width: 100%;
+        height: fit-content;
+        margin: 30px 0px 30px 0px;
+        display: flex;
+        flex-direction: column;
+    }
+    .booking-block img{
+        width: 100%;
+        height: 200px;
+        margin-bottom: 30px;
+    }
+    .booking-block__info {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        margin:0px;
+    }
+    .booking-block__info img {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        top: auto;
+        bottom: 0px;
+        margin-bottom: 0px;
+    }
+    .booking-block__info-title{
+        display: flex;
+        margin-bottom: 20px;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: left;
+        color: #448899;
+    }
+    .booking-block__info-container {
+        width: 100%;
+        height: 24px;
+    }
+    .separator-block {
+        width: 100%;
+        border-top: 1px solid #E8E8E8;
+        box-sizing: border-box;
+        position: relative;
+    }
+    .contact-block {
+        width: 100%;
+        height: fit-content;
+    }
+    #notice {
+        margin-top: 5px;
+    }
+    .payment-block {
+        width: 100%;
+        height: 188px;
+    }
+    .confirm-block {
+        width: 100%;
+        height: 100px;
+    }
+    .confirm-block__total {
+        width: 100%;
+        height: 20px;
+    }
+    .no-schedule {
+        display: flex;
+        width: 100%;
+        height: 24px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}

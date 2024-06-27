@@ -3,9 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking</title>
+  <title>台北一日遊</title>
+  <link rel="icon" href="/static/images/favicon.png" type="image/png">
+  <link rel="stylesheet" type="text/css" href="/static/css/booking.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/header.css"/>
+  <script defer src="/static/js/booking.js"></script>
+  <script defer src="/static/js/header.js"></script>
 </head>
 <body>
-  
+  <header>
+    <nav class="nav-bar">
+      <div class="left">台北一日遊</div>
+      <div class="right">
+        <div class="menu">
+          <div class="booking">預定行程</div>
+          <div class="signin-signup">登入/註冊</div>
+          <div class="signout hide">登出系統</div>
+        </div>
+      </div>
+    </nav>
+    <dialog id="signinDialog">
+      <form id=signin>
+          <div class="decorator-bar"></div>
+          <div class="container">
+            <div class="container_title">登入會員帳號<img onclick="closeDialog('signinDialog')" src="/static/images/icon-close.png" class="icon-close"/></div>
+            <input type="email" id="signin-email" class="input-style" name="email" placeholder="輸入電子信箱" required>
+            <input type="password" id="signin-password" class="input-style" name="password" placeholder="輸入密碼" required>
+            <button type="submit" class="submit-style">登入帳戶</button>
+            <div id="signin-response" class="signin-font hide">電子郵件或密碼錯誤</div>
+            <div id="go-to-signup" class="font16-500">還沒有帳戶？點此註冊</div>
+          </div>
+      </form>
+    </dialog>
+    <dialog id="signupDialog">
+      <form id="signup">
+          <div class="decorator-bar"></div>
+          <div class="container">
+            <div class="container_title">註冊會員帳號<img onclick="closeDialog('signupDialog')" src="/static/images/icon-close.png" class="icon-close"/></div>
+            <input type="text" id="signup-name" class="input-style" name="name" placeholder="輸入姓名" required>
+            <input type="email" id="signup-email" class="input-style" name="email" placeholder="輸入電子郵件" required>
+            <input type="password" id="signup-password" class="input-style" name="password" placeholder="輸入密碼" required>
+            <button type="submit" class="submit-style">註冊新帳戶</button>
+            <div id="signup-response" class="signup-font hide">Email已經註冊帳戶</div>
+            <div id="back-to-signin" class="font16-500">已經有帳戶了？點此登入</div>
+          </div>
+      </form>
+    </dialog>
+  </header>
+  <main id="main-content">
+    <section class="view">
+      <div class="headline">
+        <div class="font19-700">您好，</div>
+        <div id="user-name" class="font19-700"></div>
+        <div class="font19-700">，待預定的行程如下：</div>
+      </div>
+      <div class="booking-block">
+        <img id="attraction-img" alt="attraction-img">
+        <div class="booking-block__info">
+          <img id="icon-delete" src="/static/images/icon-delete.png" alt="icon-delete">
+          <div class="booking-block__info-title">
+            <div>台北一日遊：</div>
+            <div id="attraction-name"></div>
+          </div>
+          <div class="booking-block__info-container">
+            <div>日期：</div>
+            <div id="booking-date"></div>
+          </div>
+          <div class="booking-block__info-container">
+            <div>時間：</div>
+            <div id="booking-time"></div>
+          </div>
+          <div class="booking-block__info-container">
+            <div>費用：</div>
+            <div class="booking-block__price-container">
+              <div>新台幣&nbsp;</div>
+              <div id="booking-price"></div>
+              <div>&nbsp;元</div>
+            </div>
+          </div>
+          <div class="booking-block__info-container">
+            <div>地點：</div>
+            <div id="attraction-address"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="view">
+      <div class="separator-block">
+        <div class="contact-block">
+          <div class="contact-block__title">您的聯絡資訊</div>
+          <label>聯絡姓名：
+            <input id="contact-name" type="text">
+          </label>
+          <label>連絡信箱：
+            <input id="contact-email" type="email">
+          </label>
+          <label>手機號碼：
+            <input type="tel"> <!--還是number呢-->
+          </label>
+          <div id="notice" class="font16-700">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>  
+        </div>
+      </div>
+    </section>
+    <section class="view">
+      <div class="separator-block">
+        <div class="payment-block">
+          <div class="payment-block__title">信用卡付款資訊</div>
+          <label>卡片號碼：
+            <input type="tel" placeholder="**** **** **** ****">
+          </label>
+          <label>過期時間：
+            <input type="text" placeholder="MM / YY">
+          </label>
+          <label>驗證密碼：
+            <input type="text" placeholder="CVV">
+          </label>
+        </div>
+      </div>
+    </section>
+    <section class="view">
+      <div class="separator-block">
+        <div class="confirm-block">
+          <div class="confirm-block__total font16-700">
+            <div>總價：新台幣&nbsp;</div>
+            <div id="confirm-total">2000</div>
+            <div>&nbsp;元</div>
+          </div>
+          <div class="btn__container">
+            <button class="confirm-block__btn">確認訂購並付款</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer id="footer-content">
+    <div class="copyright">COPYRIGHT © 2021 台北一日遊</div>
+  </footer>
 </body>
 </html>

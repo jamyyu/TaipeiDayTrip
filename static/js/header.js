@@ -1,3 +1,48 @@
+window.onload = function() {
+    checkAuth();
+};
+
+
+function renderAuthPage(){
+    const signOut = document.querySelector(".signout");
+    const signinSignup = document.querySelector(".signin-signup");
+    signinSignup.classList.add("hide");
+    signOut.classList.remove("hide");
+}
+
+
+function renderUnauthPage(){
+    const signOut = document.querySelector(".signout");
+    const signinSignup = document.querySelector(".signin-signup");
+    signOut.classList.add("hide");
+    signinSignup.classList.remove("hide");
+}
+
+
+// 檢查 LocalStorage 中是否有 token
+function checkAuth() {
+    const token = localStorage.getItem("token");
+    fetch("/api/user/auth",{
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        user_info = data["data"]
+        if (user_info === "null"){
+            renderUnauthPage()
+        }
+        else{
+            renderAuthPage()
+        }
+    })
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
     //回首頁
     const homebtn = document.querySelector(".left");
@@ -6,23 +51,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     //登入/註冊點擊
     const signinSignup = document.querySelector(".signin-signup");
-    const signin = document.getElementById("signin");
-    const signup = document.getElementById("signup");
+    const signinDialog = document.getElementById("signinDialog");
+    const signupDialog = document.getElementById("signupDialog");
     signinSignup.addEventListener("click", () => {
-        signin.classList.remove("hide");
-        signup.classList.add("hide");
+        signinDialog.showModal();
+        signupDialog.close();
     });
     //處理尚未註冊點擊
     const goToSignup = document.getElementById("go-to-signup");
     goToSignup.addEventListener("click", () => {
-        signin.classList.add("hide");
-        signup.classList.toggle("hide");
+        signinDialog.close();
+        signupDialog.showModal();
     });
-    //回到註冊
+    //回到登入
     const backToSignin = document.getElementById("back-to-signin");
     backToSignin.addEventListener("click", () => {
-        signup.classList.add("hide");
-        signin.classList.toggle("hide");
+        signinDialog.showModal();
+        signupDialog.close();
+    })
+    //預定行程點擊
+    const booking = document.querySelector(".booking");
+    booking.addEventListener("click", () => {
+        if (signinSignup.classList.contains("hide")) {
+            window.location.href = "/booking";
+        } else {
+            signinDialog.showModal();
+        }
     })
     //提交註冊表單
     signUp();
@@ -32,7 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const signout = document.querySelector(".signout");
     signout.addEventListener("click", () => {
         localStorage.removeItem("token");
-        window.location.reload()
+        if (window.location.pathname.includes("booking")) {
+            window.location.href = "/";  // 重定向到首頁
+        } else {
+            window.location.reload();  // 重新加載當前頁面
+        }
     })
 });
 
@@ -137,13 +195,6 @@ function signIn(){
 }
 
 
-function closeSignin(){
-    const signin = document.getElementById("signin");
-    signin.classList.add("hide");
-}
-
-
-function closeSignup(){
-    const signup = document.getElementById("signup");
-    signup.classList.add("hide");
+function closeDialog(dialogId) {
+    document.getElementById(dialogId).close();
 }
