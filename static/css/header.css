@@ -60,6 +60,7 @@ header {
     padding: 10px;
     color: #666666;
     box-sizing: border-box;
+    cursor: url("/static/images/mouse-24.png"), pointer;
 }
 .signin-signup {
     width: 91px;
