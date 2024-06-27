@@ -373,4 +373,23 @@ async def get_booking(token: str = Depends(oauth2_scheme)):
 		return Data(data = "null")
 
 
-
+@app.delete(
+    "/api/booking",
+	response_model = Success,
+	responses={
+		200: {"model": Success, "description": "刪除成功"},
+		403: {"model": Error, "description": "未登入系統，拒絕存取"},
+	}
+)
+async def delete_booking(token: str = Depends(oauth2_scheme)):
+	try:
+		payload = jwt.decode(token, key, algorithms = "HS256")
+		user_id = payload["id"]
+	except:
+		return JSONResponse(content = {"error": True, "message": "Not logged in, access denied"}, status_code = 403)
+	query = "SELECT * FROM booking WHERE user_id = %s"
+	bookingData = execute_query(query, (user_id,), dictionary=True)
+	if bookingData:
+		query = "DELETE FROM booking WHERE user_id = %s"
+		execute_query(query, (user_id,))
+	return Success(ok = True)
