@@ -1,3 +1,48 @@
+window.onload = function() {
+    checkAuth();
+};
+
+
+function renderAuthPage(){
+    const signOut = document.querySelector(".signout");
+    const signinSignup = document.querySelector(".signin-signup");
+    signinSignup.classList.add("hide");
+    signOut.classList.remove("hide");
+}
+
+
+function renderUnauthPage(){
+    const signOut = document.querySelector(".signout");
+    const signinSignup = document.querySelector(".signin-signup");
+    signOut.classList.add("hide");
+    signinSignup.classList.remove("hide");
+}
+
+
+// 檢查 LocalStorage 中是否有 token
+function checkAuth() {
+    const token = localStorage.getItem("token");
+    fetch("/api/user/auth",{
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        user_info = data["data"]
+        if (user_info === "null"){
+            renderUnauthPage()
+        }
+        else{
+            renderAuthPage()
+        }
+    })
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
     //回首頁
     const homebtn = document.querySelector(".left");
@@ -23,6 +68,15 @@ document.addEventListener("DOMContentLoaded", () => {
     backToSignin.addEventListener("click", () => {
         signinDialog.showModal();
         signupDialog.close();
+    })
+    //預定行程點擊
+    const booking = document.querySelector(".booking");
+    booking.addEventListener("click", () => {
+        if (signinSignup.classList.contains("hide")) {
+            window.location.href = "/booking";
+        } else {
+            signinDialog.showModal();
+        }
     })
     //提交註冊表單
     signUp();
