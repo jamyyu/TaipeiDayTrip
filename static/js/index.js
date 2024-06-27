@@ -2,55 +2,10 @@ let observer = null;
 const loadedPages = new Set(); 
 
 
-window.onload = function() {
-    checkAuth();
-};
-
-
 document.addEventListener("DOMContentLoaded", () => {
     //載入第0頁圖片
     fetchAttractions(0, "");
 });
-
-
-function renderAuthPage(){
-    const signOut = document.querySelector(".signout");
-    const signinSignup = document.querySelector(".signin-signup");
-    signinSignup.classList.add("hide");
-    signOut.classList.remove("hide");
-}
-
-
-function renderUnauthPage(){
-    const signOut = document.querySelector(".signout");
-    const signinSignup = document.querySelector(".signin-signup");
-    signOut.classList.add("hide");
-    signinSignup.classList.remove("hide");
-}
-
-
-// 檢查 LocalStorage 中是否有 token
-function checkAuth() {
-    const token = localStorage.getItem("token");
-    fetch("/api/user/auth",{
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-        }
-    })
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
-        user_info = data["data"]
-        if (user_info === "null"){
-            renderUnauthPage()
-        }
-        else{
-            renderAuthPage()
-        }
-    })
-}
 
 
 function fetchAttractions(page, keyword) {
