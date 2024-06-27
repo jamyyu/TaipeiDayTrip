@@ -379,7 +379,7 @@ footer {
 
 @media (max-width: 800px){
     .nav-bar {
-        margin: 10px 0px 10px 10px;
+        margin: 10px 0px 10px 10px !important;
     }
     .welcome-block {
         width: 340px;
