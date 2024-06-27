@@ -66,7 +66,7 @@
           <div class="booking-block__form">
             <div class="booking-block__form-title">訂購導覽行程</div>
             <div class="booking-block__form-subtitle">以此景點為中心的一日行程，帶您探索城市角落故事</div>
-            <form>
+            <form id="booking-block__form">
               <div class="booking-block__form-date">
                 <label for="date" class="font16-700">選擇日期：</label>
                 <input type="date" id="booking-date" name="booking-date" required>
@@ -74,7 +74,7 @@
               <div class="booking-block__form-time">
                 <label for="time" class="font16-700">選擇時間：</label>
                 <label for="morning" class="label-morning font16-400">上半天
-                    <input type="radio" id="morning" name="time" value="morning" required>
+                    <input type="radio" id="morning" name="time" value="morning" checked required>
                     <div class="radio-checkmark"></div>
                 </label>
                 <label for="afternoon" class="label-afternoon font16-400">下半天
@@ -84,7 +84,11 @@
               </div>
               <div class="booking-block__form-price">
                 <div class="font16-700">導覽費用：</div>
-                <div id="price" class="font16-400">新台幣2000元</div>
+                <div class="booking-block__form-price-container">
+                  <div class="font16-400">新台幣&nbsp;</div>
+                  <div id="price" class="font16-400">2000</div>
+                  <div class="font16-400">&nbsp;元</div>
+                </div>
               </div>
               <button type="submit" class="booking-block__form-btn">開始預約行程</button>
             </form>
