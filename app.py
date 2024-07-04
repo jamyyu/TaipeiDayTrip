@@ -1,4 +1,7 @@
-from sqlite3 import Date
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+import random
+import re
 from fastapi import *
 from fastapi.responses import FileResponse, JSONResponse
 from dotenv import load_dotenv
@@ -7,12 +10,13 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
 import mysql.connector 
 from mysql.connector import pooling
-from pydantic import BaseModel, EmailStr 
-from typing import Union
+from pydantic import BaseModel, EmailStr, field_validator
+from typing import Literal, Union
 import json
 import bcrypt
 import jwt
 from datetime import date, datetime, timedelta
+import urllib.request as req
 
 app = FastAPI()
 
@@ -23,6 +27,7 @@ app.mount("/static", StaticFiles(directory = "static"), name = "static")
 load_dotenv()
 mypassword = os.getenv("mypassword")
 key = os.getenv("mykey")
+partner_key = os.getenv("partner_key")
 
 pool = pooling.MySQLConnectionPool(
 	pool_name = "mypool",
@@ -75,19 +80,61 @@ class SearchAttractionsData(BaseModel):
 	nextPage: Union [int, None] = None
 	data: Union [Attraction, list, None] = []
 class UserSignup(BaseModel):
-	name:str
-	email:EmailStr
-	password:str
+	name: str
+	email: EmailStr
+	password: str
 class UserSignin(BaseModel):
-	email:str
-	password:str
+	email: str
+	password: str
 class Token(BaseModel):
 	token: str
 class BookingInfo(BaseModel):
-	attractionId:int
-	date:Date
-	time:str
+	attractionId: int
+	date: date
+	time: Literal["morning", "afternoon"]
+	price: int
+
+	@field_validator("date")
+	def date_must_be_in_the_future(bookingDate):
+		if bookingDate <= date.today():
+			raise ValueError("Date must be after today")
+		return bookingDate
+	
+class AttractionInfo(BaseModel):
+	id: int
+	name: str
+	address: str
+	image: str
+class Trip(BaseModel):
+	attraction: AttractionInfo
+	date: date
+	time: Literal["morning", "afternoon"]
+
+	@field_validator("date")
+	def date_must_be_in_the_future(bookingDate):
+		if bookingDate <= date.today():
+			raise ValueError("Date must be after today")
+		return bookingDate
+
+class Contact(BaseModel):
+	name: str
+	email:EmailStr
+	phone: str
+	
+	@field_validator("phone")
+	def validate_phone(phone):
+		phone_pattern = re.compile(r"^09\d{8}$")
+		if not phone_pattern.match(phone):
+			raise ValueError("Invalid phone number format")
+		return phone
+
+class Order(BaseModel):
 	price:int
+	trip: Trip
+	contact: Contact
+class OrderInfo(BaseModel):
+	prime: str
+	order: Order
 
 
 # Static Pages (Never Modify Code in this Block)
@@ -207,11 +254,11 @@ async def read_attractionId(attractionId: int):
 async def mrt_list():
 	query = "SELECT name FROM mrt GROUP BY name ORDER BY COUNT(name) DESC"
 	data = execute_query(query)
-	newData = []
+	new_data = []
 	for mrt in data:
 		if mrt[0] != None:
-			newData.append(mrt[0])
-	return Data(data = newData)
+			new_data.append(mrt[0])
+	return Data(data = new_data)
 
 
 def hash_password(password: str) -> str:
@@ -307,10 +354,10 @@ async def check_auth(token: str = Depends(oauth2_scheme)):
 	}
 )
 async def booking(bookingInfo:BookingInfo, token: str = Depends(oauth2_scheme)):
-	attractionId = bookingInfo.attractionId
-	bookingDate = bookingInfo.date
-	bookingTime = bookingInfo.time
-	bookingPrice = bookingInfo.price
+	attraction_id = bookingInfo.attractionId
+	booking_date = bookingInfo.date
+	booking_time = bookingInfo.time
+	booking_price = bookingInfo.price
 	# 驗證 JWT 並獲取 user_id
 	try:
 		payload = jwt.decode(token, key, algorithms = "HS256")
@@ -319,27 +366,21 @@ async def booking(bookingInfo:BookingInfo, token: str = Depends(oauth2_scheme)):
 		return JSONResponse(content = {"error": True, "message": "Not logged in, access denied"}, status_code = 403)
 	# 檢查景點是否存在
 	query = "SELECT id FROM spot WHERE id = %s"
-	data = execute_query(query, (attractionId,), dictionary = True)
+	data = execute_query(query, (attraction_id,), dictionary = True)
 	if not data:
 		return JSONResponse(content = {"error": True, "message": "Attraction not found"}, status_code = 400)
-	# 檢查日期是否在明日之後
-	if bookingDate <= date.today():
-		return JSONResponse(content = {"error": True, "message": "Date must be after today"}, status_code = 400)
-	# 檢查時間是否正確
-	if bookingTime != "morning" and bookingTime != "afternoon":
-		return JSONResponse(content = {"error": True, "message": "Time must be morning or afternoon"}, status_code = 400)
 	# 檢查時間與價格是否搭配
-	if (bookingTime == "morning" and bookingPrice != 2000) or (bookingTime == "afternoon" and bookingPrice != 2500):
+	if (booking_time == "morning" and booking_price != 2000) or (booking_time == "afternoon" and booking_price != 2500):
 		return JSONResponse(content = {"error": True, "message": "Price must be 2000 for morning and 2500 for afternoon"}, status_code = 400)
 	# 預定資料寫入資料庫
 	query = "SELECT id FROM booking WHERE user_id = %s"
 	bookingData = execute_query(query, (user_id,))
 	if not bookingData:
 		query = "INSERT INTO booking (user_id, spot_id, date, time, price) VALUES (%s, %s, %s, %s, %s)"
-		execute_query(query, (user_id, attractionId, bookingDate, bookingTime, bookingPrice))
+		execute_query(query, (user_id, attraction_id, booking_date, booking_time, booking_price))
 	else:
 		query = "UPDATE booking SET spot_id = %s, date = %s, time = %s, price = %s WHERE user_id = %s"
-		execute_query(query, (attractionId, bookingDate, bookingTime, bookingPrice, user_id))
+		execute_query(query, (attraction_id, booking_date, booking_time, booking_price, user_id))
 	return Success(ok = True)
 
 
@@ -358,17 +399,17 @@ async def get_booking(token: str = Depends(oauth2_scheme)):
 	except:
 		return JSONResponse(content = {"error": True, "message": "Not logged in, access denied"}, status_code = 403)
 	query = "SELECT * FROM booking WHERE user_id = %s"
-	bookingData = execute_query(query, (user_id,), dictionary=True)
-	if bookingData:
-		bookingData = bookingData[0]
-		spot_id = bookingData["spot_id"]
+	booking_data = execute_query(query, (user_id,), dictionary=True)
+	if booking_data:
+		booking_data = booking_data[0]
+		spot_id = booking_data["spot_id"]
 		query = "SELECT name, address, images FROM spot WHERE id = %s"
-		attractionData = execute_query(query, (spot_id,), dictionary=True)
-		attractionData = attractionData[0]
-		if "images" in attractionData:
-			attractionData["images"] = json.loads(attractionData["images"])
-		return Data(data = {"attraction":{"id": spot_id, "name": attractionData["name"], "address": attractionData["address"], "image":attractionData["images"][0]}, 
-						"date": bookingData["date"].isoformat(), "time": bookingData["time"], "price": bookingData["price"]})
+		attraction_data = execute_query(query, (spot_id,), dictionary=True)
+		attraction_data = attraction_data[0]
+		if "images" in attraction_data:
+			attraction_data["images"] = json.loads(attraction_data["images"])
+		return Data(data = {"attraction":{"id": spot_id, "name": attraction_data["name"], "address": attraction_data["address"], "image":attraction_data["images"][0]}, 
+						"date": booking_data["date"].isoformat(), "time": booking_data["time"], "price": booking_data["price"]})
 	else:
 		return Data(data = "null")
 
@@ -388,8 +429,94 @@ async def delete_booking(token: str = Depends(oauth2_scheme)):
 	except:
 		return JSONResponse(content = {"error": True, "message": "Not logged in, access denied"}, status_code = 403)
 	query = "SELECT * FROM booking WHERE user_id = %s"
-	bookingData = execute_query(query, (user_id,), dictionary=True)
-	if bookingData:
+	booking_data = execute_query(query, (user_id,), dictionary=True)
+	if booking_data:
 		query = "DELETE FROM booking WHERE user_id = %s"
 		execute_query(query, (user_id,))
 	return Success(ok = True)
+
+
+@app.post(
+	"/api/orders",
+	response_model = Data,
+	responses={
+		200: {"model": Data, "description": "訂單建立成功，包含付款狀態 ( 可能成功或失敗 )"},
+		400: {"model": Error, "description": "訂單建立失敗，輸入不正確或其他原因"},
+		403: {"model": Error, "description": "未登入系統，拒絕存取"},
+		500: {"model": Error, "description": "伺服器內部錯誤"}
+	}
+)
+async def order(orderInfo: OrderInfo, token: str = Depends(oauth2_scheme)):
+	# 驗證 JWT 並獲取 user_id
+	try:
+		payload = jwt.decode(token, key, algorithms = "HS256")
+		user_id = payload["id"]
+	except:
+		return JSONResponse(content = {"error": True, "message": "Not logged in, access denied"}, status_code = 403)
+
+	timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+	random_number = ''.join(random.choices('0123456789', k=5))
+	order_number = timestamp + random_number
+	attraction_id = orderInfo.order.trip.attraction.id
+	order_date = orderInfo.order.trip.date
+	order_time = orderInfo.order.trip.time
+	order_price = orderInfo.order.price
+	contact_name = orderInfo.order.contact.name
+	contact_email = orderInfo.order.contact.email
+	contact_phone = orderInfo.order.contact.phone
+	# 檢查景點是否存在
+	query = "SELECT id FROM spot WHERE id = %s"
+	data = execute_query(query, (attraction_id,), dictionary = True)
+	if not data:
+		return JSONResponse(content = {"error": True, "message": "Attraction not found"}, status_code = 400)
+	# 檢查時間與價格是否搭配
+	if (order_time == "morning" and order_price != 2000) or (order_time == "afternoon" and order_price != 2500):
+		return JSONResponse(content = {"error": True, "message": "Price must be 2000 for morning and 2500 for afternoon"}, status_code = 400)
+	query = "INSERT INTO orders (order_number, user_id, spot_id, date, time, price, contact_name, contact_email, contact_phone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+	execute_query(query, (order_number, user_id, attraction_id, order_date, order_time, order_price, contact_name, contact_email, contact_phone))
+	
+	URL = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"
+    
+	payment_info = {
+        "prime": orderInfo.prime,
+        "partner_key": partner_key,
+		"amount": order_price,
+        "merchant_id": "jamyyu_CTBC",
+        "details": "TapPay Test",
+        "cardholder": {
+            "phone_number": contact_phone,
+            "name": contact_name,
+            "email": contact_email
+        },
+        "remember": False
+    }
+
+    # 將支付信息轉換為 JSON 字符串
+	data = json.dumps(payment_info).encode("utf-8")
+
+	headers = {
+        "Content-Type": "application/json",
+        "x-api-key": partner_key
+    }
+
+    # 創建請求對象
+	request = req.Request(URL, data = data, headers = headers)
+	with req.urlopen(request) as response:
+		response_data = response.read().decode("utf-8")
+		response_json = json.loads(response_data) # 把原始JSON資料解析成字典/列表格式
+		if response_json["status"] == 0:
+			#print("Payment successful!")
+			#print("Response:", response_json)
+			query = "UPDATE orders SET status = 'PAID' WHERE order_number = %s"
+			execute_query(query, (order_number,))
+			query = "DELETE FROM booking WHERE user_id = %s"
+			execute_query(query, (user_id,))
+			return Data( data = {"number": order_number,"payment": {"status": 0,"message": "付款成功"}})
+		else:
+			#print("Payment failed!")
+			#print("Response:", response_json)
+			query = "DELETE FROM booking WHERE user_id = %s"
+			execute_query(query, (user_id,))
+			return Data( data = {"number": order_number,"payment": {"status": response_json["status"], "message": response_json["msg"]}})
+		
+	
