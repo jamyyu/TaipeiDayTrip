@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (result.ok){
                     window.location.href = "/booking";
                 }
-                if (result.message === "Date must be after today"){
+                if (result.detail[0].msg === "Value error, Date must be after today"){
                     alert("預定日期需在明日之後")
                 }
             })
