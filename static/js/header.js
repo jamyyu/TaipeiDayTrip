@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const signout = document.querySelector(".signout");
     signout.addEventListener("click", () => {
         localStorage.removeItem("token");
-        if (window.location.pathname.includes("booking")) {
+        if ((window.location.pathname.includes("booking"))||(window.location.pathname.includes("thankyou"))){
             window.location.href = "/";  // 重定向到首頁
         } else {
             window.location.reload();  // 重新加載當前頁面

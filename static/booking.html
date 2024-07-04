@@ -9,6 +9,8 @@
   <link rel="stylesheet" type="text/css" href="/static/css/header.css"/>
   <script defer src="/static/js/booking.js"></script>
   <script defer src="/static/js/header.js"></script>
+  <script defer src="/static/js/tappay.js"></script>
+  <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.18.0"></script>
 </head>
 <body>
   <header>
@@ -99,7 +101,7 @@
             <input id="contact-email" type="email">
           </label>
           <label>手機號碼：
-            <input type="tel"> <!--還是number呢-->
+            <input id="contact-phone" type="tel">
           </label>
           <div id="notice" class="font16-700">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>  
         </div>
@@ -109,15 +111,15 @@
       <div class="separator-block">
         <div class="payment-block">
           <div class="payment-block__title">信用卡付款資訊</div>
-          <label>卡片號碼：
-            <input type="tel" placeholder="**** **** **** ****">
-          </label>
-          <label>過期時間：
-            <input type="text" placeholder="MM / YY">
-          </label>
-          <label>驗證密碼：
-            <input type="text" placeholder="CVV">
-          </label>
+          <div class="payment-block__label">卡片號碼：
+            <div class="tpfield" id="card-number"></div>
+          </div>
+          <div class="payment-block__label">過期時間：
+            <div class="tpfield" id="card-expiration-date"></div>
+          </div>
+          <div class="payment-block__label">驗證密碼：
+            <div class="tpfield" id="card-ccv"></div>
+          </div>
         </div>
       </div>
     </section>
