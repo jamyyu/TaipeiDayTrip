@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(result => {
         data = result.data;
         if (data != "null"){
+            localStorage.setItem("bookingData", JSON.stringify(data));
             renderBooking(data);
         }
         else{
@@ -50,7 +51,7 @@ function parseJwt(token) {
 function renderBooking(data) {
     const userName = document.getElementById("user-name");
     userName.textContent = userData["name"];
-    const attractionImg =document.getElementById("attraction-img");
+    const attractionImg = document.getElementById("attraction-img");
     attractionImg.src = data["attraction"]["image"];
     const attractionName = document.getElementById("attraction-name");
     attractionName.textContent = data["attraction"]["name"];
