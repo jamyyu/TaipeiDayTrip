@@ -3,9 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thank You</title>
+  <title>台北一日遊</title>
+  <link rel="icon" href="/static/images/favicon.png" type="image/png">
+  <link rel="stylesheet" type="text/css" href="/static/css/thankyou.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/header.css"/>
+  <script defer src="/static/js/thankyou.js"></script>
+  <script defer src="/static/js/header.js"></script>
 </head>
 <body>
-  
+  <header>
+    <nav class="nav-bar">
+      <div class="left">台北一日遊</div>
+      <div class="right">
+        <div class="menu">
+          <div class="booking">預定行程</div>
+          <div class="signin-signup">登入/註冊</div>
+          <div class="signout hide">登出系統</div>
+        </div>
+      </div>
+    </nav>
+    <dialog id="signinDialog">
+      <form id=signin>
+          <div class="decorator-bar"></div>
+          <div class="container">
+            <div class="container_title">登入會員帳號<img onclick="closeDialog('signinDialog')" src="/static/images/icon-close.png" class="icon-close"/></div>
+            <input type="email" id="signin-email" class="input-style" name="email" placeholder="輸入電子信箱" required>
+            <input type="password" id="signin-password" class="input-style" name="password" placeholder="輸入密碼" required>
+            <button type="submit" class="submit-style">登入帳戶</button>
+            <div id="signin-response" class="signin-font hide">電子郵件或密碼錯誤</div>
+            <div id="go-to-signup" class="font16-500">還沒有帳戶？點此註冊</div>
+          </div>
+      </form>
+    </dialog>
+    <dialog id="signupDialog">
+      <form id="signup">
+          <div class="decorator-bar"></div>
+          <div class="container">
+            <div class="container_title">註冊會員帳號<img onclick="closeDialog('signupDialog')" src="/static/images/icon-close.png" class="icon-close"/></div>
+            <input type="text" id="signup-name" class="input-style" name="name" placeholder="輸入姓名" required>
+            <input type="email" id="signup-email" class="input-style" name="email" placeholder="輸入電子郵件" required>
+            <input type="password" id="signup-password" class="input-style" name="password" placeholder="輸入密碼" required>
+            <button type="submit" class="submit-style">註冊新帳戶</button>
+            <div id="signup-response" class="signup-font hide">Email已經註冊帳戶</div>
+            <div id="back-to-signin" class="font16-500">已經有帳戶了？點此登入</div>
+          </div>
+      </form>
+    </dialog>
+  </header>
+  <main class="view">
+    <section>
+      <div class="img-container">
+        <img src="/static/images/check.png" alt="check-img">
+      </div>
+      <div class="text-container">
+        <diV class="font24-700 margin-bottom10">行程預定成功</diV>
+        <div class="font24-700 margin-bottom10">您的訂單編號如下</div>
+        <div id="order-number"></div>
+        <div class="font16-500">查詢訂單付款狀況</div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="copyright">COPYRIGHT © 2021 台北一日遊</div>
+  </footer>
 </body>
 </html>
