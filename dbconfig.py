@@ -10,7 +10,7 @@ class Database:
         pool_name = "mypool",
         pool_size = 10,  
         pool_reset_session = True,
-        host = "localhost",
+        host = "db",
         database = "TaipeiDayTrip",
         user = "root",
         password = os.getenv("mypassword"),
