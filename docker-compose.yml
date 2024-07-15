@@ -5,8 +5,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${mypassword}
       MYSQL_DATABASE: TaipeiDayTrip
-      MYSQL_USER: root
-      MYSQL_PASSWORD: ${mypassword}
     ports:
       - "3307:3306"
     volumes:
@@ -33,10 +31,6 @@ services:
       mypassword: ${mypassword}
       mykey: ${mykey}
       partner_key: ${partner_key}
-      MYSQL_HOST: db
-      MYSQL_DATABASE: TaipeiDayTrip
-      MYSQL_USER: root
-      MYSQL_PASSWORD: ${mypassword}
     networks:
       - backend
 
