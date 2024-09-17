@@ -87,9 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
     signout.addEventListener("click", () => {
         localStorage.removeItem("token");
         if ((window.location.pathname.includes("booking"))||(window.location.pathname.includes("thankyou"))){
-            window.location.href = "/";  // 重定向到首頁
+            window.location.href = "/";
         } else {
-            window.location.reload();  // 重新加載當前頁面
+            window.location.reload();
         }
     })
 });
@@ -119,7 +119,7 @@ function signUp(){
                 signupResponse.classList.remove("hide");
                 setTimeout(() => {
                     signupResponse.classList.add("hide");
-                }, 2000); // 2秒後隱藏
+                }, 2000);
             } else {
                 throw result;
             }
@@ -127,7 +127,7 @@ function signUp(){
         .catch(error => {
             console.error("Error", error);
             if (error.detail){
-                const emailError = error.detail.find(e => e.loc.includes("email"));//遍歷detail列表，找到loc裡面有email的
+                const emailError = error.detail.find(e => e.loc.includes("email"));
                 if (emailError) {
                     const signupResponse = document.getElementById("signup-response");
                     const signupFont = document.querySelector(".signup-font");
@@ -136,7 +136,7 @@ function signUp(){
                     signupResponse.classList.remove("hide");
                     setTimeout(() => {
                         signupResponse.classList.add("hide");
-                    }, 2000); // 2秒後隱藏
+                    }, 2000);
                 } 
             }
             if (error.message === "Email already registered") {
@@ -147,7 +147,7 @@ function signUp(){
                 signupResponse.classList.remove("hide");
                 setTimeout(() => {
                     signupResponse.classList.add("hide");
-                }, 2000); // 2秒後隱藏
+                }, 2000);
             }
         });
     })
@@ -172,7 +172,6 @@ function signIn(){
             token = result.token;
             if (token) {
                 localStorage.setItem("token", token);
-                //console.log(token)
                 window.location.reload();
             } else {
                 throw result;
@@ -188,7 +187,7 @@ function signIn(){
                 signinResponse.classList.remove("hide");
                 setTimeout(() => {
                     signinResponse.classList.add("hide");
-                }, 2000); // 2秒後隱藏
+                }, 2000);
             }
         });
     })

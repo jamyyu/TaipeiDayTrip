@@ -1,10 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 避免清除瀏覽器登出
     const token = localStorage.getItem("token");
     if (!token) {
         window.location.href = "/";
     }
-    // fetch to render
     userData = parseJwt(token);
     fetch("/api/booking",{
         method:"GET",
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function parseJwt(token) {
-    // 直接從 token 中提取 payload 部分，解碼並解析為 JSON
     return JSON.parse(atob(token.split(".")[1]));
 }
 

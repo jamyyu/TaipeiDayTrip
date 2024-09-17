@@ -131,18 +131,14 @@ class OrderModel:
         request = req.Request(URL, data = data, headers = headers)
         with req.urlopen(request) as response:
             response_data = response.read().decode("utf-8")
-            response_json = json.loads(response_data) # 把原始JSON資料解析成字典/列表格式
+            response_json = json.loads(response_data)
             if response_json["status"] == 0:
-                #print("Payment successful!")
-                #print("Response:", response_json)
                 query = "UPDATE orders SET status = 'PAID' WHERE order_number = %s"
                 Database.execute_query(query, (order_number,))
                 query = "DELETE FROM booking WHERE user_id = %s"
                 Database.execute_query(query, (user_id,))
                 return Data( data = {"number": order_number,"payment": {"status": 0,"message": "付款成功"}})
             else:
-                #print("Payment failed!")
-                #print("Response:", response_json)
                 query = "DELETE FROM booking WHERE user_id = %s"
                 Database.execute_query(query, (user_id,))
                 return Data( data = {"number": order_number,"payment": {"status": response_json["status"], "message": response_json["msg"]}})
