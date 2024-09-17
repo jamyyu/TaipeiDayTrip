@@ -2,6 +2,6 @@ fastapi
 uvicorn
 python-dotenv
 mysql-connector-python
-pydantic
+pydantic[email]
 bcrypt
 PyJWT
