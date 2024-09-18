@@ -26,7 +26,7 @@ Taipei Day Trip is a tourism e-commerce platform where users can explore and boo
 
 
 ## Server Architecture
-<img src="" width="600" />
+<img src="https://github.com/user-attachments/assets/befe0fc5-d86f-4155-935d-820c2d90d13b" width="600" />
 
 ## Database Schema
 <img src="" width="600" />
