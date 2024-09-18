@@ -12,7 +12,7 @@ Taipei Day Trip is a tourism e-commerce platform where users can explore and boo
 
 ## Demo
 - Users can browse through attraction information using smooth scrolling pagination and efficiently search for specific attractions by entering keywords, attraction names, or MRT station names.
--
+<img width="600" src="https://github.com/user-attachments/assets/78a37773-dc88-4351-b4fa-99a581b294ab">
 **Test Credit Card Payment Information**
 - Card Number: 4242 4242 4242 4242
 - Expiration Date: 12/27
