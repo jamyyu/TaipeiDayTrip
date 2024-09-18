@@ -29,7 +29,7 @@ Taipei Day Trip is a tourism e-commerce platform where users can explore and boo
 <img src="https://github.com/user-attachments/assets/befe0fc5-d86f-4155-935d-820c2d90d13b" width="600" />
 
 ## Database Schema
-<img src="" width="600" />
+<img src="https://github.com/user-attachments/assets/4b347795-e336-4561-91fd-b244418492ec" width="600" />
 
 ## Contact
 👩🏻‍💻 游如婕 Jamy Yu
