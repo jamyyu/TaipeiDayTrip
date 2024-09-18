@@ -1,6 +1,6 @@
 # [Taipei Day Trip](https://taipeidaytrip.shop/)
 
-Splitmate is a web-based bill-splitting application designed to help users efficiently manage shared expenses in groups and provide settlement advice with minimal transfers.
+Taipei Day Trip is a tourism e-commerce platform where users can explore and book one-day sightseeing tours in Taipei City.
 
 ## Features
 
