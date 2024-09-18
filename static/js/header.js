@@ -44,6 +44,9 @@ function checkAuth() {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+    //增加測試帳號密碼
+    document.getElementById("signin-email").value = "testuser@example.com";
+    document.getElementById("signin-password").value = "testpassword";
     //回首頁
     const homebtn = document.querySelector(".left");
     homebtn.addEventListener("click", () => {
@@ -159,7 +162,7 @@ function signIn(){
     signin.addEventListener("submit",(e) => {
         e.preventDefault();
         const signinEmail = document.getElementById("signin-email").value;
-        const signinPassword =document.getElementById("signin-password").value;
+        const signinPassword = document.getElementById("signin-password").value;
         fetch("/api/user/auth",{
             method: "PUT",
             headers: {
