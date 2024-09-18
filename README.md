@@ -3,8 +3,11 @@
 Taipei Day Trip is a tourism e-commerce platform where users can explore and book one-day sightseeing tours in Taipei City.
 
 Test Credit Card Payment Information
+
 Card Number: 4242 4242 4242 4242
+
 Expiration Date: 12/27
+
 CVV: 123
 
 ## Features
