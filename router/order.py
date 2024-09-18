@@ -20,3 +20,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/auth")
 async def order(orderInfo: OrderInfo, token: str = Depends(oauth2_scheme)):
     result = await OrderModel.order(orderInfo, token)
     return result
+
+
+@OrderRouter.get(
+    "/api/orders/{order_number}",
+    response_model=Data,
+    responses={
+        200: {"model": Data, "description": "尚未確認下單的預定行程資料，null 表示沒有資料"},
+        403: {"model": Error, "description": "未登入系統，拒絕存取"},
+    }
+)
+async def get_order(order_number: str, token: str = Depends(oauth2_scheme)):
+    result = await OrderModel.get_order(order_number, token)
+    return result

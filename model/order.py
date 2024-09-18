@@ -142,3 +142,48 @@ class OrderModel:
                 query = "DELETE FROM booking WHERE user_id = %s"
                 Database.execute_query(query, (user_id,))
                 return Data( data = {"number": order_number,"payment": {"status": response_json["status"], "message": response_json["msg"]}})
+						
+    async def get_order(order_number: str, token):
+		# 驗證 JWT 並獲取 user_id
+        try:
+            payload = jwt.decode(token, key, algorithms = "HS256")
+            user_id = payload["id"]
+        except:
+            return JSONResponse(content = {"error": True, "message": "Not logged in, access denied"}, status_code = 403) 
+        # 查詢資料庫中的訂單資訊並聯結景點資料
+        query = """
+        SELECT o.order_number, o.user_id, o.spot_id, o.date, o.time, o.price, 
+               o.contact_name, o.contact_email, o.contact_phone, o.status, 
+               s.name AS spot_name, s.address AS spot_address, s.images AS spot_images
+        FROM orders o
+        JOIN spot s ON o.spot_id = s.id
+        WHERE o.order_number = %s AND o.user_id = %s
+        """
+        order = Database.execute_query(query, (order_number, user_id), dictionary=True)
+
+        if not order:
+            return JSONResponse(content={"data": None}, status_code=200)
+
+        order_data = order[0]
+        order_data["spot_images"] = json.loads(order_data["spot_images"])
+        # 構建返回的訂單資料
+        result = {
+            "order_number": order_data["order_number"],
+            "user_id": order_data["user_id"],
+            "spot": {
+                "id": order_data["spot_id"],
+                "name": order_data["spot_name"],
+                "address": order_data["spot_address"],
+                "image": order_data["spot_images"][0]
+            },
+            "date": order_data["date"].isoformat(),
+            "time": order_data["time"],
+            "price": order_data["price"],
+            "contact": {
+                "name": order_data["contact_name"],
+                "email": order_data["contact_email"],
+                "phone": order_data["contact_phone"]
+            },
+            "status": order_data["status"],
+        }
+        return JSONResponse(content={"data": result}, status_code=200)         
