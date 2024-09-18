@@ -110,8 +110,6 @@ function renderNoBooking(userData) {
     copyright.style.position = "absolute";
     copyright.style.top = "40px";
 
-
-    // 構建結構
     divHeadline.appendChild(divHello);
     divHeadline.appendChild(divUserName);
     divHeadline.appendChild(divSchedule);
