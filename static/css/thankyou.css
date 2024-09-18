@@ -61,6 +61,70 @@ footer {
     position: absolute;
     top: 40px;
 }
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color:rgba(0, 0, 0, 0.25);
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    width: 300px;
+    max-width: 80%;
+}
+.hide {
+    display: none;
+}
+.modal-content {
+    position: relative;
+    padding: 10px;
+    padding-top: 40px;
+}
+.close-btn {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: url(/static/images/mouse-24.png), pointer;
+    z-index: 10;
+}
+.order-spot-name {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    color: #448899;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.info-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #666666;
+}
+.info-content {
+    font-size: 16px;
+    font-weight: 400;
+    color: #666666;
+}
+.order-date, .order-time, .order-price, .order-address,
+.contact-name, .contact-email {
+    margin-bottom: 10px;
+}
 
 @media (min-width: 600px) and (max-width: 1200px){
     .nav-bar {

@@ -59,9 +59,17 @@
         <diV class="font24-700 margin-bottom10">行程預定成功</diV>
         <div class="font24-700 margin-bottom10">您的訂單編號如下</div>
         <div id="order-number"></div>
-        <div class="font16-500">查詢訂單付款狀況</div>
+        <div class="font16-500" id="checkOrderBtn">查詢訂單詳情</div>
       </div>
     </section>
+    <div id="overlay" class="overlay hide"></div>
+    <div id="orderDetailsModal" class="modal hide">
+        <div class="modal-content">
+          <img src="/static/images/icon-close.png" class="close-btn" id="closeModal">
+            <!-- 訂單詳情會插入在這裡 -->
+            <div id="orderDetailsContainer"></div>
+        </div>
+    </div>
   </main>
   <footer>
     <div class="copyright">COPYRIGHT © 2021 台北一日遊</div>

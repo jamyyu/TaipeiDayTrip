@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const bookingTime = document.querySelector('input[name="time"]:checked').value;
             const bookingPrice = document.getElementById("price").textContent;
             const token = localStorage.getItem("token");
-            //console.log(attractionId,bookingDate,bookingTime,bookingPrice);
             fetch("/api/booking",{
                 method:"POST",
                 headers:{

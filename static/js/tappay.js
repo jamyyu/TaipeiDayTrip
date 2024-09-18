@@ -67,48 +67,6 @@ TPDirect.card.setup({
 
 
 const submitButton = document.querySelector('.confirm-block__btn');
-TPDirect.card.onUpdate(function (update) {
-    // update.canGetPrime === true
-    // --> you can call TPDirect.card.getPrime()
-    //if (update.canGetPrime) {
-        // Enable submit Button to get prime.
-        //submitButton.removeAttribute('disabled')
-    //} else {
-        // Disable submit Button to get prime.
-        //submitButton.setAttribute('disabled', true)
-    //}
-                                            
-    // cardTypes = ['mastercard', 'visa', 'jcb', 'amex', 'unknown']
-    if (update.cardType === 'visa') {
-        // 有時間來做顯示圖標
-    }
-
-    // number 欄位是錯誤的
-    if (update.status.number === 2) {
-        // setNumberFormGroupToError()
-    } else if (update.status.number === 0) {
-        // setNumberFormGroupToSuccess()
-    } else {
-        // setNumberFormGroupToNormal()
-    }
-    // expiry 欄位是錯誤的
-    if (update.status.expiry === 2) {
-        // setNumberFormGroupToError()
-    } else if (update.status.expiry === 0) {
-        // setNumberFormGroupToSuccess()
-    } else {
-        // setNumberFormGroupToNormal()
-    }
-    // ccv 欄位是錯誤的
-    if (update.status.ccv === 2) {
-        // setNumberFormGroupToError()
-    } else if (update.status.ccv === 0) {
-        // setNumberFormGroupToSuccess()
-    } else {
-        // setNumberFormGroupToNormal()
-    }
-})
-
 
 // call TPDirect.card.getPrime when user submit form to get tappay prime
 submitButton.addEventListener("click",() => {

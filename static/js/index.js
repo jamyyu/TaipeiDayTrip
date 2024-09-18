@@ -3,7 +3,6 @@ const loadedPages = new Set();
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    //載入第0頁圖片
     fetchAttractions(0, "");
 });
 
@@ -99,7 +98,7 @@ function observeFooter(nextPage, keyword) {
                     console.error("Error fetching data:", error);
             });
         }
-    }, {rootMargin: "100px"}); //rootMargin 正值為外擴，負值為內縮
+    }, {rootMargin: "100px"});
     observer.observe(footer);
 }
 
@@ -159,13 +158,12 @@ function getScrollAmount() {
 
 function scrollList(direction) {
     const list = document.querySelector(".mrt-list");
-    const listWidth = list.scrollWidth; // 列表總寬度
-    const blockWidth = list.parentElement.offsetWidth; //列表可視區域的寬度
-    const scrollAmount = getScrollAmount(); // 根據視窗尺寸動態獲取滾動量
+    const listWidth = list.scrollWidth;
+    const blockWidth = list.parentElement.offsetWidth;
+    const scrollAmount = getScrollAmount();
 
     scrollPosition += direction * scrollAmount;
     
-    // 確保滾動不會超出內容範圍
     if (scrollPosition < 0) {
         scrollPosition = 0;
     } else if (scrollPosition > listWidth - blockWidth) {

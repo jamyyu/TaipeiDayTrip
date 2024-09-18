@@ -44,7 +44,7 @@ key = os.getenv("mykey")
 
 
 def hash_password(password: str) -> str:
-    salt = bcrypt.gensalt() #生成一個新的隨機鹽值
+    salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
     return hashed_password.decode("utf-8")
 
@@ -83,10 +83,9 @@ class UserModel:
             "id": data[0]["id"],
             "name": data[0]["name"],
             "email": data[0]["email"],
-            "exp": exp_timestamp  # 添加過期時間
+            "exp": exp_timestamp 
             }
             encoded = jwt.encode(payload, key, algorithm = "HS256")
-            #print(encoded)
             return Token(token = encoded)
     
     async def check_auth(token: str = Depends(oauth2_scheme)):
