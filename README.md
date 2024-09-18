@@ -11,7 +11,7 @@ Taipei Day Trip is a tourism e-commerce platform where users can explore and boo
 - **Payment**: Complete payments via TapPay.
 
 ## Demo
-
+- Users can browse through attraction information using smooth scrolling pagination and efficiently search for specific attractions by entering keywords, attraction names, or MRT station names.
 
 ## Tech Stack
 - **Frontend**: HTML, CSS, JavaScript
