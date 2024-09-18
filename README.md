@@ -9,10 +9,10 @@ Taipei Day Trip is a tourism e-commerce platform where users can explore and boo
 - **Pagination**: View attraction information with smooth scrolling.
 - **Tour Booking**: Book tours and add them to your cart.
 - **Payment**: Complete payments via TapPay.
-
-## Demo
-- Users can browse through attraction information using smooth scrolling pagination and efficiently search for specific attractions by entering keywords, attraction names, or MRT station names.
+- 
 <img width="600" src="https://github.com/user-attachments/assets/78a37773-dc88-4351-b4fa-99a581b294ab">
+<img width="600" src="https://github.com/user-attachments/assets/6e277016-52bb-4945-9761-34eaf869ac88">
+<img width="600" src="https://github.com/user-attachments/assets/4b00ab4d-846f-4377-8e6d-14285198dc9f">
 
 **Test Credit Card Payment Information**
 - Card Number: 4242 4242 4242 4242
